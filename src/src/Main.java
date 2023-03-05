@@ -9,7 +9,7 @@ public class Main {
 	static Scanner scanner = new Scanner(System.in);
 
 	public static void main(String[] args) {
-		Shop shop = new Shop("My Shop", "123456789", "123456789", "shop@example.com", "www.example.com");
+		Shop shop = new Shop();
 		ArrayList<Item> items = new ArrayList<Item>();
 
 		while (true) {
@@ -42,22 +42,13 @@ public class Main {
 					shop.setShopName(newName);
 					// save data
 					break;
-				case 3:
-					System.out.println("Enter tel number:");
-					String tel = scanner.nextLine();
-					System.out.println("Enter fax number:");
-					String fax = scanner.nextLine();
-					System.out.println("Enter email address:");
-					String email = scanner.nextLine();
-					System.out.println("Enter website:");
-					String website = scanner.nextLine();
-					shop.setTel(tel);
-					shop.setFax(fax);
-					shop.setEmail(email);
-					shop.setWebsite(website);
-					// save data
-					break;
+				case 3:// Set Invoice Header (Tel / Fax / Email / Website) (Data should be saved
+					 shop.setInvoiceHeader();
+					System.out.println(shop.toString()) ;
+					    break;
+					    // save data
 				case 4:
+					shop.loadInvoiceHeader();
 					// go back
 					break;
 				default:
@@ -106,22 +97,25 @@ public class Main {
 
 				case 2:
 					// delete item
+					removeItem();
 					break;
 				case 3:
 					// change item price
+					changePrice();
 					break;
 				case 4:
 					// report all items
+					reportAllItems();
 					break;
 				case 5:
 					// go back
 					break;
-				case 6: // test methods
-					//loadItems();
-					//System.out.println(loadItems());
-					 printItems();
-					removeItem();
-					break;
+				// case 6: // test methods
+				// loadItems();
+				// System.out.println(loadItems());
+				// printItems();
+				// removeItem();
+				// break;
 				default:
 					System.out.println("Invalid choice.");
 					break;
@@ -173,32 +167,96 @@ public class Main {
 	}
 
 	private static void removeItem() {
-	    System.out.println("Enter item ID to remove:");
-	    int idToRemove = scanner.nextInt();
-	    boolean found = false;
-	    for (int i = 0; i < items.size(); i++) {
-	        if (items.get(i).getId() == idToRemove) {
-	            items.remove(i);
-	            found = true;
-	            System.out.println("Item removed successfully.");
-	            break;
-	        }
-	    }
-	    if (!found) {
-	        System.out.println("Item with ID " + idToRemove + " not found.");
-	    }
-	    try {
-	        FileOutputStream fos = new FileOutputStream("items.ser");
-	        ObjectOutputStream oos = new ObjectOutputStream(fos);
-	        oos.writeObject(items);
-	        oos.close();
-	        fos.close();
-	    } catch (IOException ioe) {
-	        ioe.printStackTrace();
-	    }
+		System.out.println("Enter item ID to remove:");
+		int idToRemove = scanner.nextInt();
+		boolean found = false;
+		for (int i = 0; i < items.size(); i++) {
+			if (items.get(i).getId() == idToRemove) {
+				items.remove(i);
+				found = true;
+				break;
+			}
+		}
+		if (found) {
+			System.out.println("Item removed successfully.");
+		} else {
+			System.out.println("Item with ID " + idToRemove + " not found.");
+		}
+		try {
+			FileOutputStream fos = new FileOutputStream("items.ser");
+			ObjectOutputStream oos = new ObjectOutputStream(fos);
+			oos.writeObject(items);
+			oos.close();
+			fos.close();
+		} catch (IOException ioe) {
+			ioe.printStackTrace();
+		}
 	}
 
+	private static void changePrice() {
+		System.out.println("Enter item ID to change price:");
+		int itemId = scanner.nextInt();
+		scanner.nextLine(); // consume the newline character
 
+		boolean itemFound = false;
+		for (Item item : items) {
+			if (item.getId() == itemId) {
+				System.out.println("Enter new unit price:");
+				double newPrice = scanner.nextDouble();
+				scanner.nextLine(); // consume the newline character
+				item.setUnitPrice(newPrice);
+				itemFound = true;
+				break;
+			}
+		}
+
+		if (itemFound) {
+			try {
+				FileOutputStream fos = new FileOutputStream("items.ser");
+				ObjectOutputStream oos = new ObjectOutputStream(fos);
+				oos.writeObject(items);
+				oos.close();
+				fos.close();
+				System.out.println("Item price changed successfully.");
+			} catch (IOException ioe) {
+				ioe.printStackTrace();
+			}
+		} else {
+			System.out.println("Item not found.");
+		}
+	}
+
+	private static void reportAllItems() {
+		try {
+			FileInputStream fis = new FileInputStream("items.ser");
+			ObjectInputStream ois = new ObjectInputStream(fis);
+			ArrayList<Item> items = (ArrayList<Item>) ois.readObject();
+			ois.close();
+			fis.close();
+			System.out.println("All Items Report:");
+			System.out.println("-----------------------");
+			for (Item item : items) {
+				System.out.println(item.toString());
+			}
+			System.out.println("-----------------------");
+		} catch (IOException | ClassNotFoundException ioe) {
+			ioe.printStackTrace();
+		}
+	}
+
+	public static String[] loadInvoiceHeader() {
+	    try {
+	        FileInputStream fis = new FileInputStream("shop.ser");
+	        ObjectInputStream ois = new ObjectInputStream(fis);
+	        Shop shop = (Shop) ois.readObject();
+	        ois.close();
+	        fis.close();
+	        return new String[]{shop.tel, shop.fax, shop.email, shop.website};
+	    } catch (IOException | ClassNotFoundException e) {
+	        e.printStackTrace();
+	        return null;
+	    }
+	}
 
 
 
