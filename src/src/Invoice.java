@@ -13,17 +13,7 @@ public class Invoice {
     private double paidAmount;
     private double balance;
 
-    public Invoice(int id, String customerName, String phoneNumber, Date invoiceDate, List<Item> items,
-                   double totalAmount, double paidAmount, double balance) {
-        this.id = id;
-        this.customerName = customerName;
-        this.phoneNumber = phoneNumber;
-        this.invoiceDate = invoiceDate;
-        this.items = items;
-        this.totalAmount = totalAmount;
-        this.paidAmount = paidAmount;
-        this.balance = balance;
-    }
+
 
     public int getId() {
         return id;
@@ -88,4 +78,19 @@ public class Invoice {
     public void setBalance(double balance) {
         this.balance = balance;
     }
+
+    public double getTotalPrice() {
+        double totalPrice = 0.0;
+        for (Item item : items) {
+            totalPrice += item.getUnitPrice() * item.getQuantity();
+        }
+        return totalPrice;
+    }
+
+    public void addItem(Item item) {
+        items.add(item);
+    }
+
+
+    
 }
