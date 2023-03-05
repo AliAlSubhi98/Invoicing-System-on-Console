@@ -1,6 +1,8 @@
 package src;
 
-public class Item {
+import java.io.Serializable;
+
+public class Item implements Serializable{
     private int id;
     private String name;
     private double unitPrice;
@@ -43,5 +45,15 @@ public class Item {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+    
+    @Override
+    public String toString() {
+        return "Item{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", unitPrice=" + unitPrice +
+                ", quantity=" + quantity +
+                '}';
     }
 }
