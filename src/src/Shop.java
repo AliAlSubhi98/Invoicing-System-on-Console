@@ -25,11 +25,15 @@ public class Shop implements Serializable{
 	private String website;
 	 List<Invoice> invoices;
 	 List<Item> items;
+	 Customer customer = new Customer();
 	 public Shop() {
 		    this.items = new ArrayList<Item>();
 		    this.invoices = new ArrayList<Invoice>();
 		}
 
+	 public List<Item> getItems() {
+		    return this.items;
+		}
 	public String getShopName() {
 		return shopName;
 	}
