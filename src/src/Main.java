@@ -115,6 +115,7 @@ public class Main {
 				downloadInvoice(invoice);
 				break;
 			case 4:
+				generateStatisticsReport();
 				break;
 			case 5:
 				break;
@@ -319,7 +320,8 @@ public class Main {
 			}
 			System.out.println("Enter item " + i + " quantity: ");
 			int quantity = scanner.nextInt();
-			chosenItem.setQuantity(quantity);
+			chosenItem.setQuantity(chosenItem.getQuantity()-quantity);
+			chosenItem.setQty(chosenItem.getQuantity()*chosenItem.getUnitPrice());
 			items.add(chosenItem);
 		}
 		double totalAmount = 0;
@@ -499,5 +501,18 @@ public class Main {
 	        e.printStackTrace();
 	    }
 	}
+	public static void generateStatisticsReport() {
+	    int numItems = shop.getItems().size();
+	    int numInvoices = shop.getInvoices().size();
+	    double totalSales = 0.0;
+	    for (Invoice invoice : shop.getInvoices()) {
+	        totalSales += invoice.getTotalAmount();
+	    }
+	    System.out.println("Statistics Report:");
+	    System.out.println("Number of Items: " + numItems);
+	    System.out.println("Number of Invoices: " + numInvoices);
+	    System.out.println("Total Sales: $" + String.format("%.2f", totalSales));
+	}
+
 
 }

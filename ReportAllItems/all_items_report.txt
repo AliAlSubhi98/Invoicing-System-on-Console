@@ -47,3 +47,56 @@ All Items Report:
 Item{id=1, name='mango', unitPrice=0.5, quantity=100, QTY=50.0}
 Item{id=2, name='orange', unitPrice=0.5, quantity=100, QTY=50.0}
 -----------------------
+Date: 2023-03-06
+All Items Report:
+-----------------------
+Item{id=1, name='milk', unitPrice=20.0, quantity=10, QTY=200.0}
+-----------------------
+Date: 2023-03-06
+All Items Report:
+-----------------------
+Item{id=1, name='milk', unitPrice=20.0, quantity=10, QTY=200.0}
+-----------------------
+Date: 2023-03-06
+All Items Report:
+-----------------------
+Item{id=1, name='milk', unitPrice=20.0, quantity=1, QTY=200.0}
+Item{id=22, name='water', unitPrice=100.0, quantity=5, QTY=500.0}
+-----------------------
+Date: 2023-03-06
+All Items Report:
+-----------------------
+Item{id=1, name='milk', unitPrice=20.0, quantity=1, QTY=200.0}
+Item{id=22, name='water', unitPrice=100.0, quantity=5, QTY=500.0}
+-----------------------
+Date: 2023-03-06
+All Items Report:
+-----------------------
+Item{id=1, name='milk', unitPrice=100.0, quantity=1, QTY=200.0}
+Item{id=22, name='water', unitPrice=100.0, quantity=1, QTY=500.0}
+-----------------------
+Date: 2023-03-06
+All Items Report:
+-----------------------
+Item{id=1, name='milk', unitPrice=100.0, quantity=10, QTY=1000.0}
+-----------------------
+Date: 2023-03-06
+All Items Report:
+-----------------------
+Item{id=1, name='milk', unitPrice=100.0, quantity=10, QTY=1000.0}
+-----------------------
+Date: 2023-03-06
+All Items Report:
+-----------------------
+Item{id=1, name='milk', unitPrice=100.0, quantity=10, QTY=1000.0}
+-----------------------
+Date: 2023-03-06
+All Items Report:
+-----------------------
+Item{id=1, name='milk', unitPrice=100.0, quantity=10, QTY=1000.0}
+-----------------------
+Date: 2023-03-06
+All Items Report:
+-----------------------
+Item{id=1, name='213', unitPrice=100.0, quantity=100, QTY=10000.0}
+-----------------------

@@ -30,7 +30,9 @@ public class Shop implements Serializable{
 		    this.items = new ArrayList<Item>();
 		    this.invoices = new ArrayList<Invoice>();
 		}
-
+	 public List<Invoice> getInvoices() {
+		    return this.invoices;
+		}
 	 public List<Item> getItems() {
 		    return this.items;
 		}
