@@ -25,7 +25,7 @@ public class Shop implements Serializable{
 	private String website;
 	 List<Invoice> invoices;
 	 List<Item> items;
-	 Customer customer = new Customer();
+	// Customer customer = new Customer();
 	 public Shop() {
 		    this.items = new ArrayList<Item>();
 		    this.invoices = new ArrayList<Invoice>();

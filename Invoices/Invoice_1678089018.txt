@@ -1,0 +1,12 @@
+Invoice #1678089018
+Customer name: null
+Customer phone number: null
+Invoice date: Tue Oct 10 00:00:00 PDT 2023
+--------------------------------------------------------------
+Item name           Unit price          Quantity            Total price         
+--------------------------------------------------------------
+milk                100.00              5                   500.00              
+--------------------------------------------------------------
+                                              Total amount: 500.00              
+                                               Paid amount: 1000.00             
+                                                   Balance: 500.00              

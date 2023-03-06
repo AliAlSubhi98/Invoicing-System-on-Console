@@ -1,0 +1,49 @@
+
+Date: 2023-03-06
+All Items Report:
+-----------------------
+Item{id=2, name='clear', unitPrice=50.0, quantity=100}
+-----------------------
+Date: 2023-03-06
+All Items Report:
+-----------------------
+Item{id=1, name='milk', unitPrice=100.0, quantity=5, QTY=500.0}
+-----------------------
+Date: 2023-03-06
+All Items Report:
+-----------------------
+Item{id=1, name='milk', unitPrice=100.0, quantity=100, QTY=10000.0}
+-----------------------
+Date: 2023-03-06
+All Items Report:
+-----------------------
+Item{id=1, name='hot_choclate', unitPrice=25.0, quantity=1000, QTY=25000.0}
+-----------------------
+Date: 2023-03-06
+All Items Report:
+-----------------------
+Item{id=1, name='hot_choclate', unitPrice=20.0, quantity=1000, QTY=25000.0}
+-----------------------
+Date: 2023-03-06
+All Items Report:
+-----------------------
+Item{id=1, name='milk', unitPrice=100.0, quantity=1000, QTY=100000.0}
+-----------------------
+Date: 2023-03-06
+All Items Report:
+-----------------------
+Item{id=1, name='milk', unitPrice=0.1, quantity=200, QTY=20.0}
+Item{id=2, name='water', unitPrice=0.1, quantity=200, QTY=20.0}
+Item{id=3, name='snacks', unitPrice=0.5, quantity=250, QTY=125.0}
+-----------------------
+Date: 2023-03-06
+All Items Report:
+-----------------------
+Item{id=1, name='test', unitPrice=11.0, quantity=1, QTY=11.0}
+-----------------------
+Date: 2023-03-06
+All Items Report:
+-----------------------
+Item{id=1, name='mango', unitPrice=0.5, quantity=100, QTY=50.0}
+Item{id=2, name='orange', unitPrice=0.5, quantity=100, QTY=50.0}
+-----------------------

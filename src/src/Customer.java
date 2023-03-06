@@ -1,4 +1,4 @@
-package src;
+/*package src;
 
 public class Customer {
     private String fullName;
@@ -8,7 +8,7 @@ public class Customer {
         this.fullName = fullName;
         this.phoneNumber = phoneNumber;
     }*/
-
+/*
     public String getFullName() {
         return fullName;
     }
@@ -25,3 +25,4 @@ public class Customer {
         this.phoneNumber = phoneNumber;
     }
 }
+*/

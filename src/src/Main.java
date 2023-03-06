@@ -22,7 +22,11 @@ public class Main {
 			System.out.println("1- Shop Settings");
 			System.out.println("2- Manage Shop Items");
 			System.out.println("3- Create new Invoice");
-			System.out.println("4- Exit");
+			System.out.println("4- Report: Statistics (No Of Items, No of Invoices, Total Sales)");
+			System.out.println("5- Report: All Invoices ( Invoice No, Invoice Date, Customer Name, No of items, Total, Balance) ");
+			System.out.println("6- Search (1) Invoice (Search by Invoice No and Report All Invoice details with items)");
+			System.out.println("7- Program Statistics (Print each Main Menu Item with how many time it has been  selected).");
+			System.out.println("8- Exit");
 
 			int choice = scanner.nextInt();
 			scanner.nextLine(); // consume the newline character
@@ -103,7 +107,7 @@ public class Main {
 					break;
 				}
 				break;
-			case 3:
+			case 3: //3- Create new Invoice"
 				Invoice invoice = createInvoice(shop.items);
 				if (invoice != null) {
 					invoice.printInvoice();
@@ -111,7 +115,14 @@ public class Main {
 				downloadInvoice(invoice);
 				break;
 			case 4:
-				
+				break;
+			case 5:
+				break;
+			case 6:
+				break;
+			case 7:
+				break;
+			case 8:
 				System.out.println("Exiting program...");
 				return;
 			default:
@@ -122,7 +133,7 @@ public class Main {
 	}
 	// ----------------------------------------------------------------------
 
-	@SuppressWarnings("unchecked") // suppress unchecked cast warning
+	/*@SuppressWarnings("unchecked") // suppress unchecked cast warning
 	public static ArrayList<Item> loadItems() {
 		ArrayList<Item> items = null;
 		try {
@@ -140,10 +151,10 @@ public class Main {
 			cne.printStackTrace();
 		}
 		return items;
-	}
+	}*/
 	// ----------------------------------------------------------------------
 
-	private static void printItems() {
+	/*private static void printItems() {
 		try {
 			FileInputStream fis = new FileInputStream("items.ser");
 			ObjectInputStream ois = new ObjectInputStream(fis);
@@ -156,7 +167,7 @@ public class Main {
 		} catch (IOException | ClassNotFoundException e) {
 			e.printStackTrace();
 		}
-	}
+	}*/
 	// ----------------------------------------------------------------------
 
 	private static void removeItem() {
@@ -243,8 +254,7 @@ public class Main {
 	        List<Item> items = (List<Item>) ois.readObject();
 	        ois.close();
 	        fis.close();
-	        
-	        File folder = new File("C:\\Users\\Lenovo\\Documents\\ReportAllItems");
+		    File folder = new File("C:\\Users\\Lenovo\\eclipse-workspace\\groceries_shop\\ReportAllItems");
 	        if (!folder.exists()) { // check if the folder not exist
 	            folder.mkdir(); // if not - create folder
 	        }
@@ -332,7 +342,7 @@ public class Main {
 			oos.writeObject(shop.invoices);
 			oos.close();
 			fos.close();
-			System.out.println("Item added successfully.");
+			System.out.println("Invoice added successfully.");
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
 		}
@@ -349,7 +359,8 @@ public class Main {
 		double unitPrice = scanner.nextDouble();
 		System.out.println("Enter item quantity:");
 		int quantity = scanner.nextInt();
-		Item item = new Item(id, name, unitPrice, quantity);
+		double qty = unitPrice * quantity;
+		Item item = new Item(id, name, unitPrice, quantity,qty);
 		shop.items.add(item);
 
 		try {
@@ -365,7 +376,7 @@ public class Main {
 	}
 
 	// ----------------------------------------------------------------------
-	static void downloadInvoice(Invoice invoice) {
+	/*static void downloadInvoice(Invoice invoice) {
 	    File folder = new File("C:\\Users\\Lenovo\\Documents\\Invoices");
 	    if (!folder.exists()) { // check if the folder not exist
 	        folder.mkdir(); // if not - create folder
@@ -374,9 +385,16 @@ public class Main {
 	    File myFile = new File(folder, fileName);
 	    try {
 	        FileWriter fw = new FileWriter(myFile, true);
+	        //header
+	        fw.write("Shop name: " + shop.getShopName());
+	        fw.write("Tel: " + shop.getTel());
+	        fw.write("Fax: " + shop.getFax());
+	        fw.write("Email: " + shop.getEmail());
+	        fw.write("Website: " + shop.getWebsite());
+
 	        fw.write("Invoice #" + invoice.getId() + "\n");
-	        fw.write("Customer name: " + shop.customer.getFullName() + "\n");
-	        fw.write("Customer phone number: " + shop.customer.getPhoneNumber() + "\n");
+	        fw.write("Customer name: " + invoice.getCustomerName() + "\n");
+	        fw.write("Customer phone number: " + invoice.getPhoneNumber() + "\n");
 	        fw.write("Invoice date: " + invoice.getInvoiceDate() + "\n");
 	        fw.write("--------------------------------------------------------------\n");
 	        fw.write(String.format("%-20s%-20s%-20s%-20s\n", "Item name", "Unit price", "Quantity", "Total price"));
@@ -394,7 +412,92 @@ public class Main {
 	        System.out.println("Error in FileWriter");
 	        e.printStackTrace();
 	    }
+	}*/
+	
+	/*static void downloadInvoice(Invoice invoice) {
+		
+	    File folder = new File("C:\\Users\\Lenovo\\eclipse-workspace\\groceries_shop\\Invoices");
+	    if (!folder.exists()) { // check if the folder not exist
+	        folder.mkdir(); // if not - create folder
+	    }
+	    String fileName = String.format("Invoice_%d.txt", invoice.getId());
+	    File myFile = new File(folder, fileName);
+	    try {
+	        FileWriter fw = new FileWriter(myFile, true);
+	        // header
+	        fw.write(String.format("%50s\n\n", shop.getShopName()));
+	        fw.write(String.format("%52s\n\n", "INVOICE"));
+	        fw.write(String.format("%50s\n", shop.getFax()));
+	        fw.write(String.format("%50s\n", shop.getTel()));
+	        fw.write(String.format("%50s\n", shop.getEmail()));
+	        fw.write(String.format("%50s\n\n", shop.getWebsite()));
+
+	        fw.write(String.format("%-30s%-20s%-20s%-20s%-20s\n", "ITEM", "UNIT PRICE", "QUANTITY", "AMOUNT","QTY"));
+	        fw.write(String.format("%-30s%-20s%-20s%-20s\n", "----", "----------", "--------", "------", "---"));
+	        for (Item item : invoice.getItems()) {
+	            fw.write(String.format("%-30s%-20.2f%-20d%-20.2f\n", item.getName(), item.getUnitPrice(), item.getQuantity(), item.getTotalPrice(), item.getQty()));
+	        }
+	        fw.write(String.format("%80s\n", "-----------"));
+	        fw.write(String.format("%60s%-20.2f\n", "SUBTOTAL: ", invoice.getTotalAmount()));
+	        fw.write(String.format("%60s%-20.2f\n", "PAID: ", invoice.getPaidAmount()));
+	        fw.write(String.format("%60s%-20.2f\n\n", "BALANCE: ", invoice.getBalance()));
+
+	        fw.write(String.format("%50s\n", "Thank you for your business!"));
+	        fw.write(String.format("%50s\n\n", "Please come again."));
+
+	        fw.write(String.format("%50s\n", "Invoice Number: " + invoice.getId()));
+	        fw.write(String.format("%50s\n", "Customer Name: " + invoice.getCustomerName()));
+	        fw.write(String.format("%50s\n", "Phone Number: " + invoice.getPhoneNumber()));
+	        fw.write(String.format("%50s\n", "Invoice Date: " + invoice.getInvoiceDate()));
+
+	        fw.close();
+	        System.out.println("Invoice downloaded successfully.");
+	    } catch (IOException e) {
+	        System.out.println("Error in FileWriter");
+	        e.printStackTrace();
+	    }
 	}
+*/
+
 // ----------------------------------------------------------------------
+	static void downloadInvoice(Invoice invoice) {
+	    File folder = new File("C:\\Users\\Lenovo\\Documents\\Invoices");
+	    if (!folder.exists()) { // check if the folder not exist
+	        folder.mkdir(); // if not - create folder
+	    }
+	    String fileName = String.format("Invoice_%d.txt", invoice.getId());
+	    File myFile = new File(folder, fileName);
+	    try {
+	        FileWriter fw = new FileWriter(myFile, true);
+	        // Header
+	        fw.write("+------------------------------------------------------------+\n");
+	        fw.write(String.format("| %-28s%30s |\n", "Shop name:", shop.getShopName()));
+	        fw.write(String.format("| %-28s%30s |\n", "Tel:", shop.getTel()));
+	        fw.write(String.format("| %-28s%30s |\n", "Fax:", shop.getFax()));
+	        fw.write(String.format("| %-28s%30s |\n", "Email:", shop.getEmail()));
+	        fw.write(String.format("| %-28s%30s |\n", "Website:", shop.getWebsite()));
+	        fw.write("+------------------------------------------------------------+\n");
+	        fw.write(String.format("| %-60s |\n", "Invoice #" + invoice.getId()));
+	        fw.write(String.format("| %-60s |\n", "Customer name: " + invoice.getCustomerName()));
+	        fw.write(String.format("| %-60s |\n", "Customer phone number: " + invoice.getPhoneNumber()));
+	        fw.write(String.format("| %-60s |\n", "Invoice date: " + invoice.getInvoiceDate()));
+	        fw.write("+------------------------------------------------------------+\n");
+	        fw.write(String.format("| %-20s| %-20s| %-20s| %-20s|\n", "Item name", "Unit price", "Quantity", "Total price"));
+	        fw.write("+------------------------------------------------------------+\n");
+	        for (Item item : invoice.getItems()) {
+	            fw.write(String.format("| %-20s| %-20.2f| %-20d| %-20.2f|\n", item.getName(), item.getUnitPrice(), item.getQuantity(), item.getTotalPrice()));
+	        }
+	        fw.write("+------------------------------------------------------------+\n");
+	        fw.write(String.format("| %-60s| %-20.2f |\n", "Total amount:", invoice.getTotalAmount()));
+	        fw.write(String.format("| %-60s| %-20.2f |\n", "Paid amount:", invoice.getPaidAmount()));
+	        fw.write(String.format("| %-60s| %-20.2f |\n", "Balance:", invoice.getBalance()));
+	        fw.write("+------------------------------------------------------------+\n");
+	        fw.close();
+	        System.out.println("Invoice downloaded successfully.");
+	    } catch (IOException e) {
+	        System.out.println("Error in FileWriter");
+	        e.printStackTrace();
+	    }
+	}
 
 }

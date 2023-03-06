@@ -1,0 +1,26 @@
+                                          ALI_SHOP
+
+                                             INVOICE
+
+                                           1234689
+                                          95878696
+                          alialsubhi1998@gmail.com
+                                www.alialsubhi.com
+
+ITEM                          UNIT PRICE          QUANTITY            AMOUNT              QTY                 
+----                          ----------          ---                 ------              
+milk                          0.10                2                   0.20                
+water                         0.10                10                  1.00                
+snacks                        0.50                5                   2.50                
+                                                                     -----------
+                                                  SUBTOTAL: 3.70                
+                                                      PAID: 20.00               
+                                                   BALANCE: 16.30               
+
+                      Thank you for your business!
+                                Please come again.
+
+                        Invoice Number: 1678100948
+                         Customer Name: ali_hamood
+                            Phone Number: 99382262
+        Invoice Date: Tue Oct 10 00:00:00 PDT 2023

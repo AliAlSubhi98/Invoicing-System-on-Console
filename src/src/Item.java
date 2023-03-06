@@ -7,12 +7,14 @@ public class Item implements Serializable{
     private String name;
     private double unitPrice;
     private int quantity;
+    private double qty;
 
-    public Item(int id, String name, double unitPrice, int quantity) {
+    public Item(int id, String name, double unitPrice, int quantity , double qty) {
         this.id = id;
         this.name = name;
         this.unitPrice = unitPrice;
         this.quantity = quantity;
+        this.qty = qty;
     }
 
     public int getId() {
@@ -54,10 +56,20 @@ public class Item implements Serializable{
                 ", name='" + name + '\'' +
                 ", unitPrice=" + unitPrice +
                 ", quantity=" + quantity +
+                ", QTY=" + qty +
                 '}';
     }
     public double getTotalPrice() {
 		double totalPrice = unitPrice * quantity;
 		return totalPrice;
+	}
+
+	public double getQty() {
+		return qty;
+	}
+
+	public void setQty(double qty) {
+		qty = unitPrice * quantity;
+		this.qty = qty;
 	}
 }
