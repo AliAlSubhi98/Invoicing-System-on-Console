@@ -6,7 +6,16 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.sql.Date;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
+
 
 public class Shop implements Serializable{
 	private String shopName;
@@ -14,7 +23,8 @@ public class Shop implements Serializable{
 	private String fax;
 	private String email;
 	private String website;
-
+	private List<Invoice> invoices;
+	private List<Item> items;
 
 	public String getShopName() {
 		return shopName;
@@ -70,31 +80,6 @@ public class Shop implements Serializable{
 	    return "Tel: " + this.tel + "\nFax: " + this.fax + "\nEmail: " + this.email + "\nWebsite: " + this.website;
 	}
 
-	
-	/*public static void setInvoiceHeader(Shop shop) {
-	    Scanner scanner = new Scanner(System.in);
-	    System.out.println("Enter new invoice header information:");
-	    System.out.print("Tel: ");
-	    String tel = scanner.nextLine();
-	    System.out.print("Fax: ");
-	    String fax = scanner.nextLine();
-	    System.out.print("Email: ");
-	    String email = scanner.nextLine();
-	    System.out.print("Website: ");
-	    String website = scanner.nextLine();
-	    shop.setInvoiceHeader(tel, fax, email, website);
-
-	    try {
-	        FileOutputStream fos = new FileOutputStream("shop.ser");
-	        ObjectOutputStream oos = new ObjectOutputStream(fos);
-	        oos.writeObject(shop);
-	        oos.close();
-	        fos.close();
-	        System.out.println("Shop data saved.");
-	    } catch (IOException ioe) {
-	        ioe.printStackTrace();
-	    }
-	}*/
 	public void setInvoiceHeader() {
 	    Scanner scanner = new Scanner(System.in);
 	    System.out.println("Enter new invoice header information:");
@@ -142,7 +127,40 @@ public class Shop implements Serializable{
 	    }
 	}
 
+	
+	private void loadData() {
+	    try {
+	        FileInputStream fis = new FileInputStream("shop.ser");
+	        ObjectInputStream ois = new ObjectInputStream(fis);
+	        Shop shop = (Shop) ois.readObject();
+	        ois.close();
+	        fis.close();
 
+	        this.shopName = shop.shopName;
+	        this.tel = shop.tel;
+	        this.fax = shop.fax;
+	        this.email = shop.email;
+	        this.website = shop.website;
+	        this.items = shop.items;
+	        this.invoices = shop.invoices; 
+	    } catch (IOException ioe) {
+	        System.out.println("Error loading shop data: " + ioe.getMessage());
+	    } catch (ClassNotFoundException c) {
+	        System.out.println("Class not found: " + c.getMessage());
+	    }
+	}
+	public static void saveData(List<Invoice> invoices) {
+	    try {
+	        FileOutputStream fos = new FileOutputStream("invoices.ser");
+	        ObjectOutputStream oos = new ObjectOutputStream(fos);
+	        oos.writeObject(invoices);
+	        oos.close();
+	        fos.close();
+	        System.out.println("Invoices saved.");
+	    } catch (IOException ioe) {
+	        ioe.printStackTrace();
+	    }
+	}
 
 
 }

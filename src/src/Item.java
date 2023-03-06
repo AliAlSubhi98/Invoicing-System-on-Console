@@ -56,4 +56,8 @@ public class Item implements Serializable{
                 ", quantity=" + quantity +
                 '}';
     }
+    public double getTotalPrice() {
+		double totalPrice = unitPrice * quantity;
+		return totalPrice;
+	}
 }

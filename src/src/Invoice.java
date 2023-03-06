@@ -1,7 +1,9 @@
 package src;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
 
 public class Invoice {
     private int id;
@@ -13,7 +15,16 @@ public class Invoice {
     private double paidAmount;
     private double balance;
 
-
+    public Invoice( String customerName, String phoneNumber, Date invoiceDate,
+			ArrayList<Item> items, double totalAmount, double paidAmount, double balance) {
+		this.customerName = customerName;
+		this.phoneNumber = phoneNumber;
+		this.invoiceDate = invoiceDate;
+		this.items = items;
+		this.totalAmount = totalAmount;
+		this.paidAmount = paidAmount;
+		this.balance = balance; 
+	}
 
     public int getId() {
         return id;
@@ -44,8 +55,8 @@ public class Invoice {
     }
 
     public void setInvoiceDate(Date invoiceDate) {
-        this.invoiceDate = invoiceDate;
-    }
+		this.invoiceDate = invoiceDate;
+	}
 
     public List<Item> getItems() {
         return items;
@@ -90,6 +101,26 @@ public class Invoice {
     public void addItem(Item item) {
         items.add(item);
     }
+
+	public void printInvoice() {
+		System.out.println("Customer Name: " + customerName);
+		System.out.println("Phone Number: " + phoneNumber);
+		System.out.println("Invoice Date: " + getInvoiceDate());
+		if (items != null) {
+		    System.out.println("Items:");
+		    for (Item item : items) {
+		        System.out.println(" - " + item.getName() + " (" + item.getQuantity() + " x " + item.getUnitPrice() + ") = " + item.getTotalPrice());
+		    }
+		    System.out.println("Total Amount: " + totalAmount);
+		    System.out.println("Paid Amount: " + paidAmount);
+		    System.out.println("Balance: " + balance);
+		}
+		else {
+			System.out.println("items in null");
+		}
+
+		
+	}
 
 
     
