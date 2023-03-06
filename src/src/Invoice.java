@@ -1,11 +1,12 @@
 package src;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 
-public class Invoice {
+public class Invoice implements Serializable{
     private int id;
     private String customerName;
     private String phoneNumber;
@@ -15,8 +16,9 @@ public class Invoice {
     private double paidAmount;
     private double balance;
 
-    public Invoice( String customerName, String phoneNumber, Date invoiceDate,
+    public Invoice( int id ,String customerName, String phoneNumber, Date invoiceDate,
 			ArrayList<Item> items, double totalAmount, double paidAmount, double balance) {
+    	this.id = id;
 		this.customerName = customerName;
 		this.phoneNumber = phoneNumber;
 		this.invoiceDate = invoiceDate;
@@ -98,11 +100,9 @@ public class Invoice {
         return totalPrice;
     }
 
-    public void addItem(Item item) {
-        items.add(item);
-    }
 
 	public void printInvoice() {
+		System.out.println("InvoiceNO: " + id);
 		System.out.println("Customer Name: " + customerName);
 		System.out.println("Phone Number: " + phoneNumber);
 		System.out.println("Invoice Date: " + getInvoiceDate());

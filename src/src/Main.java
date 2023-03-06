@@ -2,6 +2,7 @@ package src;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Scanner;
 
 
@@ -11,11 +12,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 public class Main {
-	private static ArrayList<Item> items = new ArrayList<>();
 	static Scanner scanner = new Scanner(System.in);
+	static Shop shop = new Shop();
 
 	public static void main(String[] args) {
-		Shop shop = new Shop();
 
 		while (true) {
 			System.out.println("Main Menu:");
@@ -36,7 +36,6 @@ public class Main {
 				System.out.println("4- Go Back");
 
 				int shopChoice = scanner.nextInt();
-				scanner.nextLine(); // consume the newline character
 
 				switch (shopChoice) {
 				case 1:
@@ -44,7 +43,7 @@ public class Main {
 					break;
 				case 2:
 					System.out.println("Enter new shop name:");
-					String newName = scanner.nextLine();
+					String newName = scanner.next();
 					shop.setShopName(newName);
 					// save data
 					break;
@@ -71,7 +70,6 @@ public class Main {
 				System.out.println("5- Go Back");
 
 				int itemChoice = scanner.nextInt();
-				scanner.nextLine(); // consume the newline character
 
 				switch (itemChoice) {
 				case 1:
@@ -105,7 +103,7 @@ public class Main {
 				}
 				break;
 			case 3:
-				Invoice invoice = createInvoice();
+				Invoice invoice = createInvoice(shop.items);
 			    if (invoice != null) {
 			        invoice.printInvoice();
 			    }
@@ -149,7 +147,7 @@ public class Main {
 			ArrayList<Item> items = (ArrayList<Item>) ois.readObject();
 			ois.close();
 			fis.close();
-			for (Item item : items) {
+			for (Item item : shop.items) {
 				System.out.println(item);
 			}
 		} catch (IOException | ClassNotFoundException e) {
@@ -162,9 +160,9 @@ public class Main {
 		System.out.println("Enter item ID to remove:");
 		int idToRemove = scanner.nextInt();
 		boolean found = false;
-		for (int i = 0; i < items.size(); i++) {
-			if (items.get(i).getId() == idToRemove) {
-				items.remove(i);
+		for (int i = 0; i < shop.items.size(); i++) {
+			if (shop.items.get(i).getId() == idToRemove) {
+				shop.items.remove(i);
 				found = true;
 				break;
 			}
@@ -177,7 +175,7 @@ public class Main {
 		try {
 			FileOutputStream fos = new FileOutputStream("items.ser");
 			ObjectOutputStream oos = new ObjectOutputStream(fos);
-			oos.writeObject(items);
+			oos.writeObject(shop.items);
 			oos.close();
 			fos.close();
 		} catch (IOException ioe) {
@@ -189,14 +187,12 @@ public class Main {
 	private static void changePrice() {
 		System.out.println("Enter item ID to change price:");
 		int itemId = scanner.nextInt();
-		scanner.nextLine(); // consume the newline character
 
 		boolean itemFound = false;
-		for (Item item : items) {
+		for (Item item : shop.items) {
 			if (item.getId() == itemId) {
 				System.out.println("Enter new unit price:");
 				double newPrice = scanner.nextDouble();
-				scanner.nextLine(); // consume the newline character
 				item.setUnitPrice(newPrice);
 				itemFound = true;
 				break;
@@ -207,7 +203,7 @@ public class Main {
 			try {
 				FileOutputStream fos = new FileOutputStream("items.ser");
 				ObjectOutputStream oos = new ObjectOutputStream(fos);
-				oos.writeObject(items);
+				oos.writeObject(shop.items);
 				oos.close();
 				fos.close();
 				System.out.println("Item price changed successfully.");
@@ -229,7 +225,7 @@ public class Main {
 			fis.close();
 			System.out.println("All Items Report:");
 			System.out.println("-----------------------");
-			for (Item item : items) {
+			for (Item item : shop.items) {
 				System.out.println(item.toString());
 			}
 			System.out.println("-----------------------");
@@ -238,8 +234,7 @@ public class Main {
 		}
 	}
 	//----------------------------------------------------------------------
-
-	public static Invoice createInvoice() {
+	public static Invoice createInvoice(List<Item> items2) {
 	    Scanner scanner = new Scanner(System.in);
 	    System.out.println("Enter customer name: ");
 	    String customerName = scanner.nextLine();
@@ -255,20 +250,31 @@ public class Main {
 	        System.out.println("Invalid date format");
 	        return null;
 	    }
+	    System.out.println("Choose items from the list below: ");
+	    for (Item item : items2) {
+	        System.out.println(item.toString());
+	    }
 	    System.out.println("Enter number of items: ");
 	    int numberOfItems = scanner.nextInt();
 	    ArrayList<Item> items = new ArrayList<Item>();
 	    for (int i = 1; i <= numberOfItems; i++) {
 	        System.out.println("Enter item " + i + " id: ");
 	        int itemId = scanner.nextInt();
-	        System.out.println("Enter item " + i + " name: ");
-	        String itemName = scanner.next();
+	        Item chosenItem = null;
+	        for (Item item : items2) {
+	            if (item.getId() == itemId) {
+	                chosenItem = item;
+	                break;
+	            }
+	        }
+	        if (chosenItem == null) {
+	            System.out.println("Invalid item id");
+	            return null;
+	        }
 	        System.out.println("Enter item " + i + " quantity: ");
 	        int quantity = scanner.nextInt();
-	        System.out.println("Enter item " + i + " unit price: ");
-	        double unitPrice = scanner.nextDouble();
-	        Item item = new Item(itemId , itemName, unitPrice , quantity );
-	        items.add(item);
+	        chosenItem.setQuantity(quantity);
+	        items.add(chosenItem);
 	    }
 	    double totalAmount = 0;
 	    for (Item item : items) {
@@ -277,30 +283,42 @@ public class Main {
 	    System.out.println("Enter paid amount: ");
 	    double paidAmount = scanner.nextDouble();
 	    double balance = paidAmount - totalAmount;
-	    //int invoiceNumber = (int)(new Date().getTime()/1000);
-	    Invoice invoice = new Invoice(customerName, customerPhoneNumber, invoiceDate, items, totalAmount, paidAmount, balance);
-	    scanner.close();
+	    int id = (int)(new Date().getTime()/1000); // time in milliSecond 
+	    Invoice invoice = new Invoice(id,customerName, customerPhoneNumber, invoiceDate, items, totalAmount, paidAmount, balance);
+	    if (shop.invoices == null) {
+	        shop.invoices = new ArrayList<Invoice>();
+	    }
+	    shop.invoices.add(invoice);
+	    try {
+			FileOutputStream fos = new FileOutputStream("invoice.ser");
+			ObjectOutputStream oos = new ObjectOutputStream(fos);
+			oos.writeObject(shop.invoices);
+			oos.close();
+			fos.close();
+			System.out.println("Item added successfully.");
+		} catch (IOException ioe) {
+			ioe.printStackTrace();
+		}
 	    return invoice;
 	}
+
 //----------------------------------------------------------------------
 	private static void addItem() {
 		System.out.println("Enter item ID:");
 		int id = scanner.nextInt();
-		scanner.nextLine(); // consume the newline character
 		System.out.println("Enter item name:");
-		String name = scanner.nextLine();
+		String name = scanner.next();
 		System.out.println("Enter item unit price:");
 		double unitPrice = scanner.nextDouble();
-		scanner.nextLine(); // consume the newline character
 		System.out.println("Enter item quantity:");
 		int quantity = scanner.nextInt();
-		scanner.nextLine(); // consume the newline character
 		Item item = new Item(id, name, unitPrice, quantity);
-		items.add(item);
+		shop.items.add(item);
+	
 		try {
 			FileOutputStream fos = new FileOutputStream("items.ser");
 			ObjectOutputStream oos = new ObjectOutputStream(fos);
-			oos.writeObject(items);
+			oos.writeObject(shop.items);
 			oos.close();
 			fos.close();
 			System.out.println("Item added successfully.");

@@ -23,8 +23,12 @@ public class Shop implements Serializable{
 	private String fax;
 	private String email;
 	private String website;
-	private List<Invoice> invoices;
-	private List<Item> items;
+	 List<Invoice> invoices;
+	 List<Item> items;
+	 public Shop() {
+		    this.items = new ArrayList<Item>();
+		    this.invoices = new ArrayList<Invoice>();
+		}
 
 	public String getShopName() {
 		return shopName;
