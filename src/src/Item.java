@@ -1,9 +1,16 @@
 package src;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 public class Item implements Serializable{
-    private int id;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private int id;
     private String name;
     private double unitPrice;
     private int quantity;
@@ -57,6 +64,9 @@ public class Item implements Serializable{
                 ", QTY=" + qty +*/
                 '}';
     }
+    public String toStringTEST() {
+        return id+name+unitPrice;
+    }
     
     public String idNameUnitprice() {
         return String.format("%-5d%-20s%-10.2f", id, name, unitPrice);
@@ -75,4 +85,6 @@ public class Item implements Serializable{
 		qty = unitPrice * quantity;
 		this.qty = qty;
 	}
+
+
 }

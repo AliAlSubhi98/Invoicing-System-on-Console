@@ -18,22 +18,27 @@ import java.util.Scanner;
 
 
 public class Shop implements Serializable{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String shopName;
 	private String tel;
 	private String fax;
 	private String email;
 	private String website;
-	 List<Invoice> invoices;
-	 List<Item> items;
+	 ArrayList<Invoice> invoices;
+	 ArrayList<Item> items;
 	// Customer customer = new Customer();
 	 public Shop() {
 		    this.items = new ArrayList<Item>();
 		    this.invoices = new ArrayList<Invoice>();
 		}
-	 public List<Invoice> getInvoices() {
+	 public ArrayList<Invoice> getInvoices() {
 		    return this.invoices;
 		}
-	 public List<Item> getItems() {
+	 public ArrayList<Item> getItems() {
 		    return this.items;
 		}
 	
@@ -136,6 +141,40 @@ public class Shop implements Serializable{
 	    } catch (ClassNotFoundException cne) {
 	        cne.printStackTrace();
 	    }
+	}
+
+	public void setShopNameAndSerialize() {
+	    System.out.print("Enter shop name: ");
+	    Scanner scanner = new Scanner(System.in);
+	    String shopName = scanner.nextLine();
+	    setShopName(shopName);
+	    try {
+	        FileOutputStream fos = new FileOutputStream("shop.txt");
+	        ObjectOutputStream oos = new ObjectOutputStream(fos);
+	        oos.writeObject(this);
+	        oos.close();
+	        fos.close();
+	        System.out.println("Shop data saved.");
+	    } catch (IOException ioe) {
+	        ioe.printStackTrace();
+	    }
+	}
+	public static Shop deserializeShop(String fileName) {
+	    Shop shop = null;
+	    try {
+	        FileInputStream fis = new FileInputStream(fileName);
+	        ObjectInputStream ois = new ObjectInputStream(fis);
+	        shop = (Shop) ois.readObject();
+	        ois.close();
+	        fis.close();
+	        System.out.println("Shop deserialized successfully.");
+	    } catch (IOException ioe) {
+	        ioe.printStackTrace();
+	    } catch (ClassNotFoundException c) {
+	        System.out.println("Class not found.");
+	        c.printStackTrace();
+	    }
+	    return shop;
 	}
 
 }

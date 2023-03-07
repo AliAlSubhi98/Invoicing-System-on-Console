@@ -3,12 +3,16 @@ package src;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 
 public class Invoice implements Serializable{
-    private int id;
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private int id;
     private String customerName;
     private String phoneNumber;
     private LocalDate  invoiceDate;
