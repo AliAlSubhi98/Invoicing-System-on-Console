@@ -4,20 +4,16 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
-
 import java.io.*;
-import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 public class Main {
 	static Scanner scanner = new Scanner(System.in);
 	static Shop shop = new Shop();
+	static int enterShopSettingsCounter = 0;
 
 	public static void main(String[] args) {
-
 		while (true) {
 			System.out.println("Main Menu:");
 			System.out.println("1- Shop Settings");
@@ -34,6 +30,7 @@ public class Main {
 
 			switch (choice) {
 			case 1:
+				enterShopSettingsCounter++;
 				System.out.println("Shop Settings:");
 				System.out.println("1- Load Data (Items and invoices)");
 				System.out.println("2- Set Shop Name (data should be saved)");
@@ -97,12 +94,6 @@ public class Main {
 				case 5:
 					// go back
 					break;
-				// case 6: // test methods
-				// loadItems();
-				// System.out.println(loadItems());
-				// printItems();
-				// removeItem();
-				// break;
 				default:
 					System.out.println("Invalid choice.");
 					break;
@@ -125,6 +116,7 @@ public class Main {
 				searchInvoice();
 				break;
 			case 7:
+				systemStatistics();
 				break;
 			case 8:
 				System.out.println("Exiting program...");
@@ -135,6 +127,30 @@ public class Main {
 			}
 		}
 	}
+	private static void systemStatistics() {
+		System.out.println("Main Menu Statistics:");
+		System.out.println("1- Shop Settings" + enterShopSettingsCounter );
+		System.out.println("2- Manage Shop Items");
+		System.out.println("3- Create new Invoice");
+		System.out.println("4- Report: Statistics (No Of Items, No of Invoices, Total Sales)");
+		System.out.println("5- Report: All Invoices ( Invoice No, Invoice Date, Customer Name, No of items, Total, Balance) ");
+		System.out.println("6- Search (1) Invoice (Search by Invoice No and Report All Invoice details with items)");
+		System.out.println("7- Program Statistics (Print each Main Menu Item with how many time it has been  selected).");
+		System.out.println("-----------------------------------------------------------------------------------------");
+		System.out.println("Shop Settings Statistics:");
+		System.out.println("1- Load Data (Items and invoices)");
+		System.out.println("2- Set Shop Name (data should be saved)");
+		System.out.println("3- Set Invoice Header (Tel / Fax / Email / Website) (Data should be saved)");
+		System.out.println("4- Go Back");
+		System.out.println("-----------------------------------------------------------------------------------------");
+		System.out.println("Manage Shop Items Statistics:");
+		System.out.println("1- Add Items (Item should be saved/serialized)");
+		System.out.println("2- Delete Items");
+		System.out.println("3- Change Item Price");
+		System.out.println("4- Report All Items");
+		System.out.println("5- Go Back");
+	}
+	// ----------------------------------------------------------------------
 	private static void removeItem() {
 		System.out.println("Enter item ID to remove:");
 		int idToRemove = scanner.nextInt();
@@ -193,7 +209,6 @@ public class Main {
 		}
 	}
 	// ----------------------------------------------------------------------
-
 	private static void reportAllItems() {
 			System.out.println("All Items Report:");
 			System.out.println("-----------------------");
@@ -235,7 +250,6 @@ public class Main {
 	        ioe.printStackTrace();
 	    }
 	}
-
 	// ----------------------------------------------------------------------
 	public static Invoice createInvoice(List<Item> items2) {
 		System.out.println("Enter customer name: ");
@@ -248,28 +262,35 @@ public class Main {
 		for (Item item : items2) {
 			System.out.println(item.idNameUnitprice());
 		}
-		System.out.println("Enter number of items: ");
-		int numberOfItems = scanner.nextInt();
 		ArrayList<Item> items = new ArrayList<Item>();
-		for (int i = 1; i <= numberOfItems; i++) {
-			System.out.println("Enter item " + i + " id: ");
-			int itemId = scanner.nextInt();
-			Item chosenItem = null;
-			for (Item item : items2) {
-				if (item.getId() == itemId) {
-					chosenItem = item;
-					break;
+		while (true) {
+			System.out.println("Enter item ID to add or type 'done' to finish: ");
+			String input = scanner.nextLine();
+			if (input.equals("done")) {
+				break;
+			}
+			try {
+				int itemId = Integer.parseInt(input);
+				Item chosenItem = null;
+				for (Item item : items2) {
+					if (item.getId() == itemId) {
+						chosenItem = item;
+						break;
+					}
 				}
+				if (chosenItem == null) {
+					System.out.println("Invalid item ID.");
+					continue;
+				}
+				System.out.println("Enter quantity for item " + chosenItem.getName() + ":");
+				int quantity = scanner.nextInt();
+				scanner.nextLine(); // consume the newline character
+				chosenItem.setQuantity(quantity);
+				chosenItem.setQty(chosenItem.getQuantity() * chosenItem.getUnitPrice());
+				items.add(chosenItem);
+			} catch (NumberFormatException e) {
+				System.out.println("Invalid input. Please enter a valid item ID or 'done' to finish.");
 			}
-			if (chosenItem == null) {
-				System.out.println("Invalid item id");
-				return null;
-			}
-			System.out.println("Enter item " + i + " quantity: ");
-			int quantity = scanner.nextInt();
-			chosenItem.setQuantity(quantity);
-			chosenItem.setQty(chosenItem.getQuantity()*chosenItem.getUnitPrice());
-			items.add(chosenItem);
 		}
 		double totalAmount = 0;
 		for (Item item : items) {
@@ -298,7 +319,7 @@ public class Main {
 		}
 		return invoice;
 	}
-//----------------------------------------------------------------------
+	//----------------------------------------------------------------------
 	private static void addItem() {
 		System.out.println("Enter item ID:");
 		int id = scanner.nextInt();
@@ -321,7 +342,7 @@ public class Main {
 			ioe.printStackTrace();
 		}
 	}
-// ----------------------------------------------------------------------
+	// ----------------------------------------------------------------------
 	static void downloadInvoice(Invoice invoice) {
 	    File folder = new File("C:\\Users\\Lenovo\\eclipse-workspace\\groceries_shop\\Invoices");
 	    if (!folder.exists()) {
@@ -361,7 +382,6 @@ public class Main {
 	        e.printStackTrace();
 	    }
 	}
-
 	// ----------------------------------------------------------------------
 	public static void generateStatisticsReport() {
 	    int numItems = shop.getItems().size();
@@ -386,7 +406,7 @@ public class Main {
 	    System.out.println("Invoice Report:\n");
 	    System.out.printf("%-15s%-15s%-25s%-15s%-15s%-15s\n",
 	            "Invoice No.", "Invoice Date", "Customer Name", "No of Items", "Total", "Balance");
-	    System.out.println("------------------------------------------------------------------------------------");
+	    System.out.println("---------------------------------------------------------------------------------------------------");
 
 	    for (Invoice invoice : invoices) {
 	        int invoiceNo = invoice.getId();
@@ -399,7 +419,7 @@ public class Main {
 	        System.out.printf("%-15s%-15s%-25s%-15s%-15s%-15s\n",
 	                invoiceNo, invoiceDate, customerName, numOfItems, totalAmount, balance);
 	    }
-	    System.out.println("------------------------------------------------------------------------------------");
+	    System.out.println("---------------------------------------------------------------------------------------------------");
 	}
 	// ----------------------------------------------------------------------
 	public static void searchInvoice() {

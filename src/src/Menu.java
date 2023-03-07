@@ -1,4 +1,4 @@
-package src;
+/*package src;
 
 import java.awt.MenuItem;
 import java.util.HashMap;
@@ -33,4 +33,4 @@ public class Menu {
             System.out.println(item);
         }
     }
-}
+}*/

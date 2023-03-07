@@ -36,6 +36,7 @@ public class Shop implements Serializable{
 	 public List<Item> getItems() {
 		    return this.items;
 		}
+	
 	public String getShopName() {
 		return shopName;
 	}
@@ -136,40 +137,5 @@ public class Shop implements Serializable{
 	        cne.printStackTrace();
 	    }
 	}
-
-	private void loadData() {
-	    try {
-	        FileInputStream fis = new FileInputStream("shop.ser");
-	        ObjectInputStream ois = new ObjectInputStream(fis);
-	        Shop shop = (Shop) ois.readObject();
-	        ois.close();
-	        fis.close();
-
-	        this.shopName = shop.shopName;
-	        this.tel = shop.tel;
-	        this.fax = shop.fax;
-	        this.email = shop.email;
-	        this.website = shop.website;
-	        this.items = shop.items;
-	        this.invoices = shop.invoices; 
-	    } catch (IOException ioe) {
-	        System.out.println("Error loading shop data: " + ioe.getMessage());
-	    } catch (ClassNotFoundException c) {
-	        System.out.println("Class not found: " + c.getMessage());
-	    }
-	}
-	public static void saveData(List<Invoice> invoices) {
-	    try {
-	        FileOutputStream fos = new FileOutputStream("invoices.ser");
-	        ObjectOutputStream oos = new ObjectOutputStream(fos);
-	        oos.writeObject(invoices);
-	        oos.close();
-	        fos.close();
-	        System.out.println("Invoices saved.");
-	    } catch (IOException ioe) {
-	        ioe.printStackTrace();
-	    }
-	}
-
 
 }
