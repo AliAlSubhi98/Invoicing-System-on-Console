@@ -9,12 +9,10 @@ public class Item implements Serializable{
     private int quantity;
     private double qty;
 
-    public Item(int id, String name, double unitPrice, int quantity , double qty) {
+    public Item(int id, String name, double unitPrice) {
         this.id = id;
         this.name = name;
         this.unitPrice = unitPrice;
-        this.quantity = quantity;
-        this.qty = qty;
     }
 
     public int getId() {
@@ -55,10 +53,15 @@ public class Item implements Serializable{
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", unitPrice=" + unitPrice +
-                ", quantity=" + quantity +
-                ", QTY=" + qty +
+                /*", quantity=" + quantity +
+                ", QTY=" + qty +*/
                 '}';
     }
+    
+    public String idNameUnitprice() {
+        return String.format("%-5d%-20s%-10.2f", id, name, unitPrice);
+    }
+
     public double getTotalPrice() {
 		double totalPrice = unitPrice * quantity;
 		return totalPrice;

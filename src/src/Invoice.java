@@ -11,7 +11,7 @@ public class Invoice implements Serializable{
     private String customerName;
     private String phoneNumber;
     private Date invoiceDate;
-    private List<Item> items;
+    private ArrayList<Item> items;
     private double totalAmount;
     private double paidAmount;
     private double balance;
@@ -64,7 +64,7 @@ public class Invoice implements Serializable{
         return items;
     }
 
-    public void setItems(List<Item> items) {
+    public void setItems(ArrayList<Item> items) {
         this.items = items;
     }
 

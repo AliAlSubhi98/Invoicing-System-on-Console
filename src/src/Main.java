@@ -118,8 +118,10 @@ public class Main {
 				generateStatisticsReport();
 				break;
 			case 5:
+				generateInvoiceReport();
 				break;
 			case 6:
+				searchInvoice();
 				break;
 			case 7:
 				break;
@@ -132,45 +134,6 @@ public class Main {
 			}
 		}
 	}
-	// ----------------------------------------------------------------------
-
-	/*@SuppressWarnings("unchecked") // suppress unchecked cast warning
-	public static ArrayList<Item> loadItems() {
-		ArrayList<Item> items = null;
-		try {
-			FileInputStream fis = new FileInputStream("items.ser");
-			ObjectInputStream ois = new ObjectInputStream(fis);
-			Object obj = ois.readObject();
-			if (obj instanceof ArrayList) {
-				items = (ArrayList<Item>) obj; // type-safe cast
-			}
-			ois.close();
-			fis.close();
-		} catch (IOException ioe) {
-			ioe.printStackTrace();
-		} catch (ClassNotFoundException cne) {
-			cne.printStackTrace();
-		}
-		return items;
-	}*/
-	// ----------------------------------------------------------------------
-
-	/*private static void printItems() {
-		try {
-			FileInputStream fis = new FileInputStream("items.ser");
-			ObjectInputStream ois = new ObjectInputStream(fis);
-			ArrayList<Item> items = (ArrayList<Item>) ois.readObject();
-			ois.close();
-			fis.close();
-			for (Item item : shop.items) {
-				System.out.println(item);
-			}
-		} catch (IOException | ClassNotFoundException e) {
-			e.printStackTrace();
-		}
-	}*/
-	// ----------------------------------------------------------------------
-
 	private static void removeItem() {
 		System.out.println("Enter item ID to remove:");
 		int idToRemove = scanner.nextInt();
@@ -198,7 +161,6 @@ public class Main {
 		}
 	}
 	// ----------------------------------------------------------------------
-
 	private static void changePrice() {
 		System.out.println("Enter item ID to change price:");
 		int itemId = scanner.nextInt();
@@ -232,22 +194,15 @@ public class Main {
 	// ----------------------------------------------------------------------
 
 	private static void reportAllItems() {
-		try {
-			FileInputStream fis = new FileInputStream("items.ser");
-			ObjectInputStream ois = new ObjectInputStream(fis);
-			ArrayList<Item> items = (ArrayList<Item>) ois.readObject();
-			ois.close();
-			fis.close();
 			System.out.println("All Items Report:");
 			System.out.println("-----------------------");
 			for (Item item : shop.items) {
 				System.out.println(item.toString());
+				System.out.println("-----------------------");
 			}
-			System.out.println("-----------------------");
-		} catch (IOException | ClassNotFoundException ioe) {
-			ioe.printStackTrace();
-		}
+		
 	}
+	// ----------------------------------------------------------------------
 	private static void downloadAllReportItems() {
 	    try {
 	        FileInputStream fis = new FileInputStream("items.ser");
@@ -276,10 +231,6 @@ public class Main {
 	        ioe.printStackTrace();
 	    }
 	}
-
-
-
-
 	// ----------------------------------------------------------------------
 	public static Invoice createInvoice(List<Item> items2) {
 		Scanner scanner = new Scanner(System.in);
@@ -299,7 +250,7 @@ public class Main {
 		}
 		System.out.println("Choose items from the list below: ");
 		for (Item item : items2) {
-			System.out.println(item.toString());
+			System.out.println(item.idNameUnitprice());
 		}
 		System.out.println("Enter number of items: ");
 		int numberOfItems = scanner.nextInt();
@@ -320,7 +271,7 @@ public class Main {
 			}
 			System.out.println("Enter item " + i + " quantity: ");
 			int quantity = scanner.nextInt();
-			chosenItem.setQuantity(chosenItem.getQuantity()-quantity);
+			chosenItem.setQuantity(quantity);
 			chosenItem.setQty(chosenItem.getQuantity()*chosenItem.getUnitPrice());
 			items.add(chosenItem);
 		}
@@ -350,7 +301,6 @@ public class Main {
 		}
 		return invoice;
 	}
-
 //----------------------------------------------------------------------
 	private static void addItem() {
 		System.out.println("Enter item ID:");
@@ -359,10 +309,8 @@ public class Main {
 		String name = scanner.next();
 		System.out.println("Enter item unit price:");
 		double unitPrice = scanner.nextDouble();
-		System.out.println("Enter item quantity:");
-		int quantity = scanner.nextInt();
-		double qty = unitPrice * quantity;
-		Item item = new Item(id, name, unitPrice, quantity,qty);
+		
+		Item item = new Item(id, name, unitPrice);
 		shop.items.add(item);
 
 		try {
@@ -376,91 +324,6 @@ public class Main {
 			ioe.printStackTrace();
 		}
 	}
-
-	// ----------------------------------------------------------------------
-	/*static void downloadInvoice(Invoice invoice) {
-	    File folder = new File("C:\\Users\\Lenovo\\Documents\\Invoices");
-	    if (!folder.exists()) { // check if the folder not exist
-	        folder.mkdir(); // if not - create folder
-	    }
-	    String fileName = String.format("Invoice_%d.txt", invoice.getId());
-	    File myFile = new File(folder, fileName);
-	    try {
-	        FileWriter fw = new FileWriter(myFile, true);
-	        //header
-	        fw.write("Shop name: " + shop.getShopName());
-	        fw.write("Tel: " + shop.getTel());
-	        fw.write("Fax: " + shop.getFax());
-	        fw.write("Email: " + shop.getEmail());
-	        fw.write("Website: " + shop.getWebsite());
-
-	        fw.write("Invoice #" + invoice.getId() + "\n");
-	        fw.write("Customer name: " + invoice.getCustomerName() + "\n");
-	        fw.write("Customer phone number: " + invoice.getPhoneNumber() + "\n");
-	        fw.write("Invoice date: " + invoice.getInvoiceDate() + "\n");
-	        fw.write("--------------------------------------------------------------\n");
-	        fw.write(String.format("%-20s%-20s%-20s%-20s\n", "Item name", "Unit price", "Quantity", "Total price"));
-	        fw.write("--------------------------------------------------------------\n");
-	        for (Item item : invoice.getItems()) {
-	            fw.write(String.format("%-20s%-20.2f%-20d%-20.2f\n", item.getName(), item.getUnitPrice(), item.getQuantity(), item.getTotalPrice()));
-	        }
-	        fw.write("--------------------------------------------------------------\n");
-	        fw.write(String.format("%60s%-20.2f\n", "Total amount: ", invoice.getTotalAmount()));
-	        fw.write(String.format("%60s%-20.2f\n", "Paid amount: ", invoice.getPaidAmount()));
-	        fw.write(String.format("%60s%-20.2f\n", "Balance: ", invoice.getBalance()));
-	        fw.close();
-	        System.out.println("Invoice downloaded successfully.");
-	    } catch (IOException e) {
-	        System.out.println("Error in FileWriter");
-	        e.printStackTrace();
-	    }
-	}*/
-	
-	/*static void downloadInvoice(Invoice invoice) {
-		
-	    File folder = new File("C:\\Users\\Lenovo\\eclipse-workspace\\groceries_shop\\Invoices");
-	    if (!folder.exists()) { // check if the folder not exist
-	        folder.mkdir(); // if not - create folder
-	    }
-	    String fileName = String.format("Invoice_%d.txt", invoice.getId());
-	    File myFile = new File(folder, fileName);
-	    try {
-	        FileWriter fw = new FileWriter(myFile, true);
-	        // header
-	        fw.write(String.format("%50s\n\n", shop.getShopName()));
-	        fw.write(String.format("%52s\n\n", "INVOICE"));
-	        fw.write(String.format("%50s\n", shop.getFax()));
-	        fw.write(String.format("%50s\n", shop.getTel()));
-	        fw.write(String.format("%50s\n", shop.getEmail()));
-	        fw.write(String.format("%50s\n\n", shop.getWebsite()));
-
-	        fw.write(String.format("%-30s%-20s%-20s%-20s%-20s\n", "ITEM", "UNIT PRICE", "QUANTITY", "AMOUNT","QTY"));
-	        fw.write(String.format("%-30s%-20s%-20s%-20s\n", "----", "----------", "--------", "------", "---"));
-	        for (Item item : invoice.getItems()) {
-	            fw.write(String.format("%-30s%-20.2f%-20d%-20.2f\n", item.getName(), item.getUnitPrice(), item.getQuantity(), item.getTotalPrice(), item.getQty()));
-	        }
-	        fw.write(String.format("%80s\n", "-----------"));
-	        fw.write(String.format("%60s%-20.2f\n", "SUBTOTAL: ", invoice.getTotalAmount()));
-	        fw.write(String.format("%60s%-20.2f\n", "PAID: ", invoice.getPaidAmount()));
-	        fw.write(String.format("%60s%-20.2f\n\n", "BALANCE: ", invoice.getBalance()));
-
-	        fw.write(String.format("%50s\n", "Thank you for your business!"));
-	        fw.write(String.format("%50s\n\n", "Please come again."));
-
-	        fw.write(String.format("%50s\n", "Invoice Number: " + invoice.getId()));
-	        fw.write(String.format("%50s\n", "Customer Name: " + invoice.getCustomerName()));
-	        fw.write(String.format("%50s\n", "Phone Number: " + invoice.getPhoneNumber()));
-	        fw.write(String.format("%50s\n", "Invoice Date: " + invoice.getInvoiceDate()));
-
-	        fw.close();
-	        System.out.println("Invoice downloaded successfully.");
-	    } catch (IOException e) {
-	        System.out.println("Error in FileWriter");
-	        e.printStackTrace();
-	    }
-	}
-*/
-
 // ----------------------------------------------------------------------
 	static void downloadInvoice(Invoice invoice) {
 	    File folder = new File("C:\\Users\\Lenovo\\Documents\\Invoices");
@@ -501,6 +364,7 @@ public class Main {
 	        e.printStackTrace();
 	    }
 	}
+	// ----------------------------------------------------------------------
 	public static void generateStatisticsReport() {
 	    int numItems = shop.getItems().size();
 	    int numInvoices = shop.getInvoices().size();
@@ -513,6 +377,65 @@ public class Main {
 	    System.out.println("Number of Invoices: " + numInvoices);
 	    System.out.println("Total Sales: $" + String.format("%.2f", totalSales));
 	}
+	// ----------------------------------------------------------------------
+	public static void generateInvoiceReport() {
+	    List<Invoice> invoices = shop.getInvoices();
+	    if (invoices == null || invoices.isEmpty()) {
+	        System.out.println("No invoices found.");
+	        return;
+	    }
+
+	    System.out.println("Invoice Report:\n");
+	    System.out.printf("%-15s%-15s%-25s%-15s%-15s%-15s\n",
+	            "Invoice No.", "Invoice Date", "Customer Name", "No of Items", "Total", "Balance");
+	    System.out.println("------------------------------------------------------------------------------------");
+
+	    for (Invoice invoice : invoices) {
+	        int invoiceNo = invoice.getId();
+	        String invoiceDate = invoice.getInvoiceDate().toString();
+	        String customerName = invoice.getCustomerName();
+	        int numOfItems = invoice.getItems().size();
+	        double totalAmount = invoice.getTotalAmount();
+	        double balance = invoice.getBalance();
+
+	        System.out.printf("%-15s%-15s%-25s%-15s%-15s%-15s\n",
+	                invoiceNo, invoiceDate, customerName, numOfItems, totalAmount, balance);
+	    }
+	    System.out.println("------------------------------------------------------------------------------------");
+	}
+	// ----------------------------------------------------------------------
+	public static void searchInvoice() {
+	    List<Invoice> invoices = shop.getInvoices();
+	    System.out.println("Enter invoice number to search: ");
+	    int invoiceNo = scanner.nextInt();
+	    scanner.nextLine(); // consume the newline character left by nextInt()
+	    Invoice invoice = null;
+	    for (Invoice inv : invoices) {
+	        if (inv.getId() == invoiceNo) {
+	            invoice = inv;
+	            break;
+	        }
+	    }
+	    if (invoice == null) {
+	        System.out.println("Invoice not found.");
+	        return;
+	    }
+	    System.out.println("Invoice #" + invoice.getId());
+	    System.out.println("Invoice date: " + invoice.getInvoiceDate());
+	    System.out.println("Customer name: " + invoice.getCustomerName());
+	    System.out.println("Number of items: " + invoice.getItems().size());
+	    System.out.println("--------------------------------------------------------------");
+	    System.out.printf("%-20s%-20s%-20s%-20s\n", "Item name", "Unit price", "Quantity", "Total price");
+	    System.out.println("--------------------------------------------------------------");
+	    for (Item item : invoice.getItems()) {
+	        System.out.printf("%-20s%-20.2f%-20d%-20.2f\n", item.getName(), item.getUnitPrice(), item.getQuantity(), item.getTotalPrice());
+	    }
+	    System.out.println("--------------------------------------------------------------");
+	    System.out.printf("%60s%-20.2f\n", "Total amount: ", invoice.getTotalAmount());
+	    System.out.printf("%60s%-20.2f\n", "Paid amount: ", invoice.getPaidAmount());
+	    System.out.printf("%60s%-20.2f\n", "Balance: ", invoice.getBalance());
+	}
+	// ----------------------------------------------------------------------
 
 
 }

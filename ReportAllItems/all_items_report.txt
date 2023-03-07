@@ -100,3 +100,20 @@ All Items Report:
 -----------------------
 Item{id=1, name='213', unitPrice=100.0, quantity=100, QTY=10000.0}
 -----------------------
+Date: 2023-03-06
+All Items Report:
+-----------------------
+Item{id=1, name='milk', unitPrice=0.1, quantity=100, QTY=10.0}
+Item{id=2, name='water', unitPrice=0.1, quantity=500, QTY=50.0}
+-----------------------
+Date: 2023-03-06
+All Items Report:
+-----------------------
+Item{id=1, name='milk', unitPrice=0.1, quantity=0, QTY=0.0}
+-----------------------
+Date: 2023-03-06
+All Items Report:
+-----------------------
+Item{id=1, name='milk', unitPrice=0.1, quantity=0, QTY=0.0}
+Item{id=2, name='water', unitPrice=0.1, quantity=0, QTY=0.0}
+-----------------------
