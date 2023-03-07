@@ -137,7 +137,6 @@ public class Shop implements Serializable{
 	    }
 	}
 
-	
 	private void loadData() {
 	    try {
 	        FileInputStream fis = new FileInputStream("shop.ser");

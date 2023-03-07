@@ -117,3 +117,32 @@ All Items Report:
 Item{id=1, name='milk', unitPrice=0.1, quantity=0, QTY=0.0}
 Item{id=2, name='water', unitPrice=0.1, quantity=0, QTY=0.0}
 -----------------------
+Date: 2023-03-06
+All Items Report:
+-----------------------
+Item{id=1, name='asd', unitPrice=1.0}
+-----------------------
+Date: 2023-03-06
+All Items Report:
+-----------------------
+1    sad                 1.00      
+-----------------------
+Date: 2023-03-06
+
+All Items Report:
+
+ID   Name                Unit Price
+----------------------------------------------------
+1    milk                0.10      
+----------------------------------------------------
+
+Date: 2023-03-06
+
+All Items Report:
+
+ID   Name                Unit Price
+----------------------------------------------------
+1    MILKKKKKKKK         0.10      
+2    WATERRRR            0.10      
+----------------------------------------------------
+

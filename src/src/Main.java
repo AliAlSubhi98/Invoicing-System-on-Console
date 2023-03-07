@@ -10,6 +10,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class Main {
 	static Scanner scanner = new Scanner(System.in);
@@ -57,7 +58,7 @@ public class Main {
 					break;
 				// save data
 				case 4:
-					// shop.loadInvoiceHeader(); // work
+					 //Shop.loadInvoiceHeader(); // work
 					// go back
 					break;
 				default:
@@ -200,55 +201,50 @@ public class Main {
 				System.out.println(item.toString());
 				System.out.println("-----------------------");
 			}
-		
 	}
 	// ----------------------------------------------------------------------
 	private static void downloadAllReportItems() {
 	    try {
 	        FileInputStream fis = new FileInputStream("items.ser");
 	        ObjectInputStream ois = new ObjectInputStream(fis);
-	        List<Item> items = (List<Item>) ois.readObject();
+	        ArrayList<Item> items = (ArrayList<Item>) ois.readObject();
 	        ois.close();
 	        fis.close();
-		    File folder = new File("C:\\Users\\Lenovo\\eclipse-workspace\\groceries_shop\\ReportAllItems");
-	        if (!folder.exists()) { // check if the folder not exist
-	            folder.mkdir(); // if not - create folder
+	        
+	        File folder = new File("C:\\Users\\Lenovo\\eclipse-workspace\\groceries_shop\\ReportAllItems");
+	        if (!folder.exists()) {
+	            folder.mkdir();
 	        }
+	        
 	        File myFile = new File(folder, "all_items_report.txt");
 	        FileWriter fw = new FileWriter(myFile, true);
+	        
 	        Date currentDate = new Date();
 	        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-	        fw.write("Date: " + dateFormat.format(currentDate) + "\n");
-	        fw.write("All Items Report:\n");
-	        fw.write("-----------------------\n");
+	        fw.write("Date: " + dateFormat.format(currentDate) + "\n\n");
+	        fw.write("All Items Report:\n\n");
+	        fw.write(String.format("%-5s%-20s%-10s\n", "ID", "Name", "Unit Price"));
+	        fw.write("----------------------------------------------------\n");
 	        for (Item item : items) {
-	            fw.write(item.toString() + "\n");
+	            fw.write(String.format("%-5d%-20s%-10.2f\n", item.getId(), item.getName(), item.getUnitPrice()));
 	        }
-	        fw.write("-----------------------\n");
+	        fw.write("----------------------------------------------------\n\n");
 	        fw.close();
 	        System.out.println("Report downloaded successfully.");
 	    } catch (IOException | ClassNotFoundException ioe) {
 	        ioe.printStackTrace();
 	    }
 	}
+
 	// ----------------------------------------------------------------------
 	public static Invoice createInvoice(List<Item> items2) {
-		Scanner scanner = new Scanner(System.in);
 		System.out.println("Enter customer name: ");
 		String customerName = scanner.nextLine();
 		System.out.println("Enter customer phone number: ");
 		String customerPhoneNumber = scanner.nextLine();
-		System.out.println("Enter invoice date (yyyy/MM/dd): ");
-		String invoiceDateString = scanner.nextLine();
-		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
-		Date invoiceDate = null;
-		try {
-			invoiceDate = dateFormat.parse(invoiceDateString);
-		} catch (ParseException e) {
-			System.out.println("Invalid date format");
-			return null;
-		}
+		LocalDate invoiceDate = LocalDate.now();
 		System.out.println("Choose items from the list below: ");
+		System.out.println(String.format("%-5s%-20s%-10s", "ID", "Name", "Unit Price"));
 		for (Item item : items2) {
 			System.out.println(item.idNameUnitprice());
 		}
@@ -279,6 +275,7 @@ public class Main {
 		for (Item item : items) {
 			totalAmount += item.getTotalPrice();
 		}
+		System.out.println("Total Amount of items chosen = " + totalAmount);
 		System.out.println("Enter paid amount: ");
 		double paidAmount = scanner.nextDouble();
 		double balance = paidAmount - totalAmount;
@@ -326,37 +323,37 @@ public class Main {
 	}
 // ----------------------------------------------------------------------
 	static void downloadInvoice(Invoice invoice) {
-	    File folder = new File("C:\\Users\\Lenovo\\Documents\\Invoices");
-	    if (!folder.exists()) { // check if the folder not exist
-	        folder.mkdir(); // if not - create folder
+	    File folder = new File("C:\\Users\\Lenovo\\eclipse-workspace\\groceries_shop\\Invoices");
+	    if (!folder.exists()) {
+	        folder.mkdir();
 	    }
 	    String fileName = String.format("Invoice_%d.txt", invoice.getId());
 	    File myFile = new File(folder, fileName);
 	    try {
 	        FileWriter fw = new FileWriter(myFile, true);
-	        // Header
-	        fw.write("+------------------------------------------------------------+\n");
-	        fw.write(String.format("| %-28s%30s |\n", "Shop name:", shop.getShopName()));
-	        fw.write(String.format("| %-28s%30s |\n", "Tel:", shop.getTel()));
-	        fw.write(String.format("| %-28s%30s |\n", "Fax:", shop.getFax()));
-	        fw.write(String.format("| %-28s%30s |\n", "Email:", shop.getEmail()));
-	        fw.write(String.format("| %-28s%30s |\n", "Website:", shop.getWebsite()));
-	        fw.write("+------------------------------------------------------------+\n");
+	      // Header
+	        fw.write("+---------------------------------------------------------------------------------------+\n");
+	        fw.write(String.format("| %-20s | %-20s | %-20s | %-20s |\n", "Shop name:", shop.getShopName(), "Tel:", shop.getTel()));
+	        fw.write(String.format("| %-20s | %-20s | %-20s | %-20s |\n", "Fax:", shop.getFax(), "Email:", shop.getEmail()));
+	        fw.write(String.format("| %-20s | %-20s | %-20s | %-20s |\n", "Website:", shop.getWebsite(), "", ""));
+	        fw.write("+---------------------------------------------------------------------------------------+\n");
+
 	        fw.write(String.format("| %-60s |\n", "Invoice #" + invoice.getId()));
 	        fw.write(String.format("| %-60s |\n", "Customer name: " + invoice.getCustomerName()));
 	        fw.write(String.format("| %-60s |\n", "Customer phone number: " + invoice.getPhoneNumber()));
 	        fw.write(String.format("| %-60s |\n", "Invoice date: " + invoice.getInvoiceDate()));
-	        fw.write("+------------------------------------------------------------+\n");
-	        fw.write(String.format("| %-20s| %-20s| %-20s| %-20s|\n", "Item name", "Unit price", "Quantity", "Total price"));
-	        fw.write("+------------------------------------------------------------+\n");
+	        fw.write("+---------------------------------------------------------------------------------------+\n");
+	        fw.write(String.format("| %-20s | %-20s | %-20s | %-20s |\n", "Item name", "Unit price", "Quantity", "Total price"));
+	        fw.write("+---------------------------------------------------------------------------------------+\n");
 	        for (Item item : invoice.getItems()) {
-	            fw.write(String.format("| %-20s| %-20.2f| %-20d| %-20.2f|\n", item.getName(), item.getUnitPrice(), item.getQuantity(), item.getTotalPrice()));
+	            fw.write(String.format("| %-20s | $%-19.2f | %-19d | $%-19.2f |\n", item.getName(), item.getUnitPrice(), item.getQuantity(), item.getTotalPrice()));
 	        }
-	        fw.write("+------------------------------------------------------------+\n");
-	        fw.write(String.format("| %-60s| %-20.2f |\n", "Total amount:", invoice.getTotalAmount()));
-	        fw.write(String.format("| %-60s| %-20.2f |\n", "Paid amount:", invoice.getPaidAmount()));
-	        fw.write(String.format("| %-60s| %-20.2f |\n", "Balance:", invoice.getBalance()));
-	        fw.write("+------------------------------------------------------------+\n");
+	        fw.write("+---------------------------------------------------------------------------------------+\n");
+	        fw.write(String.format("| %-60s | $%-19.2f |\n", "Total amount:", invoice.getTotalAmount()));
+	        fw.write(String.format("| %-60s | $%-19.2f |\n", "Paid amount:", invoice.getPaidAmount()));
+	        fw.write(String.format("| %-60s | $%-19.2f |\n", "Balance:", invoice.getBalance()));
+	        fw.write("+---------------------------------------------------------------------------------------+\n");
+
 	        fw.close();
 	        System.out.println("Invoice downloaded successfully.");
 	    } catch (IOException e) {
@@ -364,6 +361,7 @@ public class Main {
 	        e.printStackTrace();
 	    }
 	}
+
 	// ----------------------------------------------------------------------
 	public static void generateStatisticsReport() {
 	    int numItems = shop.getItems().size();
