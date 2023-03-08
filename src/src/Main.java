@@ -30,12 +30,9 @@ public class Main {
 			System.out.println("2- Manage Shop Items");
 			System.out.println("3- Create new Invoice");
 			System.out.println("4- Report: Statistics (No Of Items, No of Invoices, Total Sales)");
-			System.out.println(
-					"5- Report: All Invoices ( Invoice No, Invoice Date, Customer Name, No of items, Total, Balance) ");
-			System.out
-					.println("6- Search (1) Invoice (Search by Invoice No and Report All Invoice details with items)");
-			System.out.println(
-					"7- Program Statistics (Print each Main Menu Item with how many time it has been  selected).");
+			System.out.println("5- Report: All Invoices ( Invoice No, Invoice Date, Customer Name, No of items, Total, Balance) ");
+			System.out.println("6- Search (1) Invoice (Search by Invoice No and Report All Invoice details with items)");
+			System.out.println("7- Program Statistics (Print each Main Menu Item with how many time it has been  selected).");
 			System.out.println("8- Exit");
 
 			int choice = scanner.nextInt();
@@ -150,6 +147,7 @@ public class Main {
 				systemStatistics();
 				break;
 			case 8:
+				CreatingTables.createTablesInDataBase();
 				System.out.println("Exiting program...");
 				return;
 			default:
@@ -435,13 +433,13 @@ public class Main {
 					"Total price"));
 			fw.write("+---------------------------------------------------------------------------------------+\n");
 			for (Item item : invoice.getItems()) {
-				fw.write(String.format("| %-20s | $%-19.2f | %-19d | $%-19.2f |\n", item.getName(), item.getUnitPrice(),
+				fw.write(String.format("| %-20s | OMR%-19.2f | %-19d | OMR%-19.2f |\n", item.getName(), item.getUnitPrice(),
 						item.getQuantity(), item.getTotalPrice()));
 			}
 			fw.write("+---------------------------------------------------------------------------------------+\n");
-			fw.write(String.format("| %-60s | $%-19.2f |\n", "Total amount:", invoice.getTotalAmount()));
-			fw.write(String.format("| %-60s | $%-19.2f |\n", "Paid amount:", invoice.getPaidAmount()));
-			fw.write(String.format("| %-60s | $%-19.2f |\n", "Balance:", invoice.getBalance()));
+			fw.write(String.format("| %-60s | OMR%-19.2f |\n", "Total amount:", invoice.getTotalAmount()));
+			fw.write(String.format("| %-60s | OMR%-19.2f |\n", "Paid amount:", invoice.getPaidAmount()));
+			fw.write(String.format("| %-60s | OMR%-19.2f |\n", "Balance:", invoice.getBalance()));
 			fw.write("+---------------------------------------------------------------------------------------+\n");
 
 			fw.close();
@@ -462,7 +460,7 @@ public class Main {
 		System.out.println("Statistics Report:");
 		System.out.println("Number of Items: " + numItems);
 		System.out.println("Number of Invoices: " + numInvoices);
-		System.out.println("Total Sales: $" + String.format("%.2f", totalSales));
+		System.out.println("Total Sales: OMR" + String.format("%.2f", totalSales));
 	}
 	// ----------------------------------------------------------------------
 	public static void generateInvoiceReport() {
