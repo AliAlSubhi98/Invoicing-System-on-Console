@@ -2,6 +2,7 @@ package src;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 import java.io.*;
@@ -54,8 +55,8 @@ public class Main {
 				switch (shopChoice) {
 				case 1:
 					// load data
-					//shop = deserializeShopName("shop.txt");//work
-					//deserializeItems("items.txt");
+					shop.deserializeShopName("shop.ser");
+					deserializeItems("items.ser");
 					Shop.loadInvoiceHeader();
 					break;
 				case 2:
@@ -71,7 +72,6 @@ public class Main {
 					break;
 				// save data
 				case 4:
-					// Shop.loadInvoiceHeader(); // work
 					// go back
 					break;
 				default:
@@ -94,6 +94,15 @@ public class Main {
 				case 1:
 					// add item
 					addItem();
+					saveItemsSerialized(shop.items);
+					ArrayList<Item> items = deserializeItems("items.ser");
+					if (items != null) {
+						for (Item item : items) {
+							System.out.println(item.toString());
+						}
+					} else {
+						System.out.println("Failed to deserialize items.");
+					}
 					break;
 				case 2:
 					// delete item
@@ -107,7 +116,6 @@ public class Main {
 					// report all items
 					reportAllItems();
 					downloadAllReportItems(shop.items);
-					saveItemsSerialized(shop.items);
 					break;
 				case 5:
 					// go back
@@ -131,7 +139,7 @@ public class Main {
 				break;
 			case 5:
 				enterReportAllInvoicesCounter++;
-				generateInvoiceReport();
+				 generateInvoiceReport();
 				break;
 			case 6:
 				enterSearchInvoiceCounter++;
@@ -150,7 +158,7 @@ public class Main {
 			}
 		}
 	}
-
+	// ----------------------------------------------------------------------
 	private static void systemStatistics() {
 		System.out.println("Main Menu Statistics:");
 		System.out.println("1- Shop Settings" + enterShopSettingsCounter);
@@ -179,25 +187,24 @@ public class Main {
 		System.out.println("4- Report All Items");
 		System.out.println("5- Go Back");
 	}
-
 	// ----------------------------------------------------------------------
 	static void removeItem() {
-		System.out.println("Enter item ID to remove:");
-		int idToRemove = scanner.nextInt();
-		boolean found = false;
-		for (int i = 0; i < shop.items.size(); i++) {
-			if (shop.items.get(i).getId() == idToRemove) {
-				shop.items.remove(i);
-				found = true;
-				break;
-			}
-		}
-		if (found) {
-			System.out.println("Item removed successfully.");
-		} else {
-			System.out.println("Item with ID " + idToRemove + " not found.");
-		}
 		try {
+			System.out.println("Enter item ID to remove:");
+			int idToRemove = scanner.nextInt();
+			boolean found = false;
+			for (int i = 0; i < shop.items.size(); i++) {
+				if (shop.items.get(i).getId() == idToRemove) {
+					shop.items.remove(i);
+					found = true;
+					break;
+				}
+			}
+			if (found) {
+				System.out.println("Item removed successfully.");
+			} else {
+				System.out.println("Item with ID " + idToRemove + " not found.");
+			}
 			FileOutputStream fos = new FileOutputStream("items.ser");
 			ObjectOutputStream oos = new ObjectOutputStream(fos);
 			oos.writeObject(shop.items);
@@ -205,9 +212,13 @@ public class Main {
 			fos.close();
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
+		} catch (InputMismatchException ime) {
+			System.out.println("Invalid input. Please enter a valid integer ID.");
+			scanner.nextLine(); // clear scanner buffer
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
-
 	// ----------------------------------------------------------------------
 	private static void changePrice() {
 		System.out.println("Enter item ID to change price:");
@@ -239,7 +250,6 @@ public class Main {
 			System.out.println("Item not found.");
 		}
 	}
-
 	// ----------------------------------------------------------------------
 	private static void reportAllItems() {
 		System.out.println("All Items Report:");
@@ -249,11 +259,10 @@ public class Main {
 			System.out.println("-----------------------");
 		}
 	}
-
 	// ----------------------------------------------------------------------
 	private static void downloadAllReportItems(ArrayList<Item> items) {
 	    try {
-	        File folder = new File("C:\\Users\\BlackDell\\git\\Invoicing-System-on-Console");
+	        File folder = new File("ReportOfItems");
 	        if (!folder.exists()) {
 	            folder.mkdirs(); // create the directory and any missing parent directories
 	        }
@@ -280,19 +289,16 @@ public class Main {
 	// ----------------------------------------------------------------------
 	private static void saveItemsSerialized(ArrayList<Item> items) {
 	    try {
-	        FileOutputStream fos = new FileOutputStream("items.txt");
+	        FileOutputStream fos = new FileOutputStream("items.ser");
 	        ObjectOutputStream oos = new ObjectOutputStream(fos);
 	        oos.writeObject(items);
 	        oos.close();
 	        fos.close();
-	        System.out.println("Items saved successfully.");
+	        System.out.println("Items saved(serialized) successfully.");
 	    } catch (IOException ioe) {
 	        ioe.printStackTrace();
 	    }
 	}
-
-
-
 	// ----------------------------------------------------------------------
 	public static Invoice createInvoice(List<Item> items2) {
 		System.out.println("Enter customer name: ");
@@ -341,7 +347,13 @@ public class Main {
 		}
 		System.out.println("Total Amount of items chosen = " + totalAmount);
 		System.out.println("Enter paid amount: ");
-		double paidAmount = scanner.nextDouble();
+		double paidAmount = 0;
+		try {
+			paidAmount = scanner.nextDouble();
+		} catch (InputMismatchException e) {
+			System.out.println("Invalid input. Please enter a valid number for paid amount.");
+			return null;
+		}
 		double balance = paidAmount - totalAmount;
 		int id = (int) (new Date().getTime() / 1000); // time in milliSecond
 		Invoice invoice = new Invoice(id, customerName, customerPhoneNumber, invoiceDate, items, totalAmount,
@@ -356,41 +368,47 @@ public class Main {
 			oos.writeObject(shop.invoices);
 			oos.close();
 			fos.close();
-			System.out.println("Invoice added successfully.");
+			System.out.println("Invoice added(serialized) successfully.");
 		} catch (IOException ioe) {
+			System.out.println("Error saving invoice. Please try again.");
 			ioe.printStackTrace();
 		}
 		return invoice;
 	}
-
 	// ----------------------------------------------------------------------
 	private static void addItem() {
-		System.out.println("Enter item ID:");
-		int id = scanner.nextInt();
-		System.out.println("Enter item name:");
-		String name = scanner.next();
-		System.out.println("Enter item unit price:");
-		double unitPrice = scanner.nextDouble();
-
-		Item item = new Item(id, name, unitPrice);
-		shop.items.add(item);
-
 		try {
-			FileOutputStream fos = new FileOutputStream("items.txt");
-			ObjectOutputStream oos = new ObjectOutputStream(fos);
-			oos.writeObject(shop.items);
-			oos.close();
-			fos.close();
-			System.out.println("Item added successfully.");
-		} catch (IOException ioe) {
-			ioe.printStackTrace();
+			System.out.println("Enter item ID:");
+			int id = scanner.nextInt();
+			scanner.nextLine();
+			System.out.println("Enter item name:");
+			String name = scanner.nextLine();
+			System.out.println("Enter item unit price:");
+			double unitPrice = scanner.nextDouble();
+			scanner.nextLine();
+
+			Item item = new Item(id, name, unitPrice);
+			shop.items.add(item);
+
+			try {
+				FileOutputStream fos = new FileOutputStream("items.txt");
+				ObjectOutputStream oos = new ObjectOutputStream(fos);
+				oos.writeObject(shop.items);
+				oos.close();
+				fos.close();
+				System.out.println("Item added successfully.");
+			} catch (IOException ioe) {
+				System.out.println("Error writing to file.");
+			}
+		} catch (InputMismatchException e) {
+			System.out.println("Invalid input. Please enter a valid number for item ID or unit price.");
+			scanner.nextLine(); // consume the invalid input
 		}
 	}
-
 	// ----------------------------------------------------------------------
 	static void downloadInvoice(Invoice invoice) {
-		//File folder = new File("C:\\Users\\Lenovo\\eclipse-workspace\\groceries_shop\\Invoices");
-		File folder = new File("C:\\Users\\BlackDell\\git\\Invoicing-System-on-Console\\Invoices");
+		File folder = new File("Invoices");
+		//File folder = new File("C:\\Users\\BlackDell\\git\\Invoicing-System-on-Console\\Invoices");
 
 		if (!folder.exists()) {
 			folder.mkdir();
@@ -433,7 +451,6 @@ public class Main {
 			e.printStackTrace();
 		}
 	}
-
 	// ----------------------------------------------------------------------
 	public static void generateStatisticsReport() {
 		int numItems = shop.getItems().size();
@@ -447,7 +464,6 @@ public class Main {
 		System.out.println("Number of Invoices: " + numInvoices);
 		System.out.println("Total Sales: $" + String.format("%.2f", totalSales));
 	}
-
 	// ----------------------------------------------------------------------
 	public static void generateInvoiceReport() {
 		List<Invoice> invoices = shop.getInvoices();
@@ -476,101 +492,58 @@ public class Main {
 		System.out.println(
 				"---------------------------------------------------------------------------------------------------");
 	}
-
 	// ----------------------------------------------------------------------
 	public static void searchInvoice() {
 		List<Invoice> invoices = shop.getInvoices();
 		System.out.println("Enter invoice number to search: ");
-		int invoiceNo = scanner.nextInt();
-		scanner.nextLine(); // consume the newline character left by nextInt()
-		Invoice invoice = null;
-		for (Invoice inv : invoices) {
-			if (inv.getId() == invoiceNo) {
-				invoice = inv;
-				break;
+		try {
+			int invoiceNo = scanner.nextInt();
+			scanner.nextLine(); // consume the newline character left by nextInt()
+			Invoice invoice = null;
+			for (Invoice inv : invoices) {
+				if (inv.getId() == invoiceNo) {
+					invoice = inv;
+					break;
+				}
 			}
-		}
-		if (invoice == null) {
-			System.out.println("Invoice not found.");
-			return;
-		}
-		System.out.println("Invoice #" + invoice.getId());
-		System.out.println("Invoice date: " + invoice.getInvoiceDate());
-		System.out.println("Customer name: " + invoice.getCustomerName());
-		System.out.println("Number of items: " + invoice.getItems().size());
-		System.out.println("--------------------------------------------------------------");
-		System.out.printf("%-20s%-20s%-20s%-20s\n", "Item name", "Unit price", "Quantity", "Total price");
-		System.out.println("--------------------------------------------------------------");
-		for (Item item : invoice.getItems()) {
-			System.out.printf("%-20s%-20.2f%-20d%-20.2f\n", item.getName(), item.getUnitPrice(), item.getQuantity(),
-					item.getTotalPrice());
-		}
-		System.out.println("--------------------------------------------------------------");
-		System.out.printf("%60s%-20.2f\n", "Total amount: ", invoice.getTotalAmount());
-		System.out.printf("%60s%-20.2f\n", "Paid amount: ", invoice.getPaidAmount());
-		System.out.printf("%60s%-20.2f\n", "Balance: ", invoice.getBalance());
-	}
-
-	// ----------------------------------------------------------------------
-	public static ArrayList<Item> loadItems() {
-		ArrayList<Item> items = null;
-		try {
-			FileInputStream fis = new FileInputStream("items.ser");
-			ObjectInputStream ois = new ObjectInputStream(fis);
-			items = (ArrayList<Item>) ois.readObject();
-			ois.close();
-			fis.close();
-		} catch (IOException | ClassNotFoundException ioe) {
-			ioe.printStackTrace();
-		}
-		return items;
-	}
-
-	// ----------------------------------------------------------------------
-	public static ArrayList<Invoice> loadInvoices() {
-		ArrayList<Invoice> invoices = new ArrayList<>();
-		try {
-			FileInputStream fis = new FileInputStream("data.txt");
-			ObjectInputStream ois = new ObjectInputStream(fis);
-			invoices = (ArrayList<Invoice>) ois.readObject();
-			ois.close();
-			fis.close();
-		} catch (IOException | ClassNotFoundException ioe) {
-			ioe.printStackTrace();
-		}
-		return invoices;
-	}
-
-	// ----------------------------------------------------------------------
-	public static void saveData(ArrayList<Invoice> invoices) {
-		try {
-			FileOutputStream fos = new FileOutputStream("invoices.ser");
-			ObjectOutputStream oos = new ObjectOutputStream(fos);
-			oos.writeObject(invoices);
-			oos.close();
-			fos.close();
-			System.out.println("Invoices saved.");
-		} catch (IOException ioe) {
-			ioe.printStackTrace();
+			if (invoice == null) {
+				System.out.println("Invoice not found.");
+				return;
+			}
+			System.out.println("Invoice #" + invoice.getId());
+			System.out.println("Invoice date: " + invoice.getInvoiceDate());
+			System.out.println("Customer name: " + invoice.getCustomerName());
+			System.out.println("Number of items: " + invoice.getItems().size());
+			System.out.println("--------------------------------------------------------------");
+			System.out.printf("%-20s%-20s%-20s%-20s\n", "Item name", "Unit price", "Quantity", "Total price");
+			System.out.println("--------------------------------------------------------------");
+			for (Item item : invoice.getItems()) {
+				System.out.printf("%-20s%-20.2f%-20d%-20.2f\n", item.getName(), item.getUnitPrice(), item.getQuantity(),
+						item.getTotalPrice());
+			}
+			System.out.println("--------------------------------------------------------------");
+			System.out.printf("%60s%-20.2f\n", "Total amount: ", invoice.getTotalAmount());
+			System.out.printf("%60s%-20.2f\n", "Paid amount: ", invoice.getPaidAmount());
+			System.out.printf("%60s%-20.2f\n", "Balance: ", invoice.getBalance());
+		} catch (InputMismatchException e) {
+			System.out.println("Invalid input. Please enter a valid invoice number.");
+			scanner.nextLine(); // consume any remaining input
 		}
 	}
-
 	// ----------------------------------------------------------------------
-	public static Shop deserializeShopName(String filename) {
-		try {
-			FileInputStream fis = new FileInputStream(filename);
-			ObjectInputStream ois = new ObjectInputStream(fis);
-			Shop shop = (Shop) ois.readObject();
-			ois.close();
-			fis.close();
-	        System.out.println(shop.getShopName());
-			return shop;
-		} catch (IOException ioe) {
-			ioe.printStackTrace();
-		} catch (ClassNotFoundException cne) {
-			cne.printStackTrace();
-		}
-		return null;
+	public static ArrayList<Invoice> loadInvoices() {//not used
+	    ArrayList<Invoice> invoices = new ArrayList<>();
+	    try {
+	        FileInputStream fis = new FileInputStream("invoice.ser");
+	        ObjectInputStream ois = new ObjectInputStream(fis);
+	        invoices = (ArrayList<Invoice>) ois.readObject();
+	        ois.close();
+	        fis.close();
+	        System.out.println("Invoices loaded successfully.");
+	    } catch (IOException | ClassNotFoundException ioe) {
+	        ioe.printStackTrace();
+	    }
+	    return invoices;
 	}
 	// ----------------------------------------------------------------------
 	public static ArrayList<Item> deserializeItems(String filename) {
@@ -589,7 +562,6 @@ public class Main {
 	    }
 	    return null;
 	}
-
 	// ----------------------------------------------------------------------
 
 }
