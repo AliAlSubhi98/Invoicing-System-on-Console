@@ -3,9 +3,10 @@ package src;
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.DriverManager;
-import java.sql.ResultSet;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Scanner;
+import java.util.Random;
 
 public class CreatingTables {
 	public static void createTablesInDataBase() {
@@ -95,12 +96,78 @@ public class CreatingTables {
 		    		+ ");";
 
 		    st.executeUpdate(sq3);
+		    
+		   
 		    System.out.println("THE shop TABLE CREATED SUCCESSFULLY");
 			con.close();
 		} catch (Exception ex) {
 			System.err.println(ex);
 		}
-	    //-----------------------------------------------------------------------------------------------------------------------------------
+		// -----------------------------------------------------------------------------------------------------------------------------------
 
 	}
+	//------------------------------------------------------------------------
+	public static void insertIntoItems() {
+		String sql = "Truncate table items;";
+        String insertQuery = "INSERT INTO items (id, name, unit_price) VALUES (?, ?, ?)";
+
+			try (Connection conn = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;"
+					+	            "databaseName=Invoicing-System-on-Console;" +
+					"encrypt=true;" +
+					"trustServerCertificate=true", "sa", "root");
+					PreparedStatement stmt = conn.prepareStatement(insertQuery)
+					) {
+				//Random rn = new Random();
+
+				for (int i = 0; i < Main.shop.items.size(); i++) {
+
+				stmt.setInt(1, Main.shop.getItems().get(i).getId());
+				stmt.setString(2, Main.shop.getItems().get(i).getName());
+				stmt.setDouble(3, Main.shop.getItems().get(i).getUnitPrice());
+				stmt.addBatch();
+				
+				}
+
+				int[] results = stmt.executeBatch();
+				System.out.println("Inserted " + results.length + " rows into hotels table.");
+			} catch (SQLException ex) {
+				ex.printStackTrace();
+			}
+		
+	}
+	//------------------------------------------------------------------------
+	public static void truncatesItems() {
+		String insertQuery = "Truncate table items;";
+
+			try (Connection conn = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;"
+					+"databaseName=Invoicing-System-on-Console;" +
+					"encrypt=true;" +
+					"trustServerCertificate=true", "sa", "root");
+					PreparedStatement stmt = conn.prepareStatement(insertQuery)
+					) {
+				stmt.executeUpdate();
+				
+			System.out.println("items Table truncated");
+			} catch (SQLException ex) {
+				ex.printStackTrace();
+			}
+	}
+	//------------------------------------------------------------------------
+	public static void inseartIntoInvoices() {
+		String insertQuery = "Truncate table items;";
+
+			try (Connection conn = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;"
+					+"databaseName=Invoicing-System-on-Console;" +
+					"encrypt=true;" +
+					"trustServerCertificate=true", "sa", "root");
+					PreparedStatement stmt = conn.prepareStatement(insertQuery)
+					) {
+				stmt.executeUpdate();
+				
+			System.out.println("items Table truncated");
+			} catch (SQLException ex) {
+				ex.printStackTrace();
+			}
+	}
+
 }

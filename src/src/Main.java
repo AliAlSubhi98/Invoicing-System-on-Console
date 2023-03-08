@@ -147,9 +147,11 @@ public class Main {
 				systemStatistics();
 				break;
 			case 8:
-				CreatingTables.createTablesInDataBase();
+				CreatingTables.truncatesItems();
+				//CreatingTables.createTablesInDataBase();
+			//	CreatingTables.insertIntoItems();
 				System.out.println("Exiting program...");
-				return;
+				//return;
 			default:
 				System.out.println("Invalid choice.");
 				break;
