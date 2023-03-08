@@ -147,9 +147,11 @@ public class Main {
 				systemStatistics();
 				break;
 			case 8:
-				CreatingTables.truncatesItems();
+				//CreatingTables.truncatesItems();
 				//CreatingTables.createTablesInDataBase();
-			//	CreatingTables.insertIntoItems();
+				//CreatingTables.insertIntoItems();
+				CreatingTables.truncatesInvoices();
+				CreatingTables.truncatesShop();
 				System.out.println("Exiting program...");
 				//return;
 			default:

@@ -108,7 +108,6 @@ public class CreatingTables {
 	}
 	//------------------------------------------------------------------------
 	public static void insertIntoItems() {
-		String sql = "Truncate table items;";
         String insertQuery = "INSERT INTO items (id, name, unit_price) VALUES (?, ?, ?)";
 
 			try (Connection conn = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;"
@@ -153,8 +152,8 @@ public class CreatingTables {
 			}
 	}
 	//------------------------------------------------------------------------
-	public static void inseartIntoInvoices() {
-		String insertQuery = "Truncate table items;";
+	public static void truncatesInvoices() {
+		String insertQuery = "Truncate table invoices;";
 
 			try (Connection conn = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;"
 					+"databaseName=Invoicing-System-on-Console;" +
@@ -164,10 +163,47 @@ public class CreatingTables {
 					) {
 				stmt.executeUpdate();
 				
-			System.out.println("items Table truncated");
+			System.out.println("invoices Table truncated");
 			} catch (SQLException ex) {
 				ex.printStackTrace();
 			}
 	}
+	//------------------------------------------------------------------------
+	public static void truncatesShop() {
+		String insertQuery = "Truncate table shop;";
+
+			try (Connection conn = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;"
+					+"databaseName=Invoicing-System-on-Console;" +
+					"encrypt=true;" +
+					"trustServerCertificate=true", "sa", "root");
+					PreparedStatement stmt = conn.prepareStatement(insertQuery)
+					) {
+				stmt.executeUpdate();
+				
+			System.out.println("shop Table truncated");
+			} catch (SQLException ex) {
+				ex.printStackTrace();
+			}
+	}
+	//------------------------------------------------------------------------
+	public static void inseartIntoShop() {
+		String insertQuery = "INSERT INTO shop (id, name, unit_price) VALUES (?, ?, ?);";
+
+			try (Connection conn = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;"
+					+"databaseName=Invoicing-System-on-Console;" +
+					"encrypt=true;" +
+					"trustServerCertificate=true", "sa", "root");
+					PreparedStatement stmt = conn.prepareStatement(insertQuery)
+					) {
+				stmt.executeUpdate();
+				
+			System.out.println("shop Table truncated");
+			} catch (SQLException ex) {
+				ex.printStackTrace();
+			}
+	}
+	//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
+
 
 }
