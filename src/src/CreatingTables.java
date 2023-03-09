@@ -35,8 +35,8 @@ public class CreatingTables {
 			String sql1 = "IF OBJECT_ID(N'dbo.items', N'U') IS NULL\r\n"
 					+ "CREATE TABLE items (\r\n"
 					+ "  id INTEGER PRIMARY KEY,\r\n"
-					+ "  name VARCHAR(255) NOT NULL,\r\n"
-					+ "  unit_price DECIMAL(10, 2) NOT NULL,\r\n"
+					+ "  name VARCHAR(255) ,\r\n"
+					+ "  unit_price DECIMAL(10, 2) ,\r\n"
 					+ ");";
 
 			st.executeUpdate(sql1);
@@ -60,12 +60,12 @@ public class CreatingTables {
 		    String sql2 = "IF OBJECT_ID(N'dbo.invoices', N'U') IS NULL\r\n"
 		    		+ "CREATE TABLE invoices (\r\n"
 		    		+ "  id INTEGER PRIMARY KEY,\r\n"
-		    		+ "  customer_name VARCHAR(255) NOT NULL,\r\n"
-		    		+ "  phone_number VARCHAR(20) NOT NULL,\r\n"
-		    		+ "  invoice_date DATE NOT NULL,\r\n"
-		    		+ "  total_amount DECIMAL(10, 2) NOT NULL,\r\n"
-		    		+ "  paid_amount DECIMAL(10, 2) NOT NULL,\r\n"
-		    		+ "  balance DECIMAL(10, 2) NOT NULL,\r\n"
+		    		+ "  customer_name VARCHAR(255) ,\r\n"
+		    		+ "  phone_number VARCHAR(20)  ,\r\n"
+		    		+ "  invoice_date DATE  ,\r\n"
+		    		+ "  total_amount DECIMAL(10, 2)  ,\r\n"
+		    		+ "  paid_amount DECIMAL(10, 2)  ,\r\n"
+		    		+ "  balance DECIMAL(10, 2)  ,\r\n"
 		    		+ ");";
 
 		    st.executeUpdate(sql2);
@@ -88,8 +88,8 @@ public class CreatingTables {
 		    String sq3 = "IF OBJECT_ID(N'dbo.shop', N'U') IS NULL\r\n"
 		    		+ "CREATE TABLE shop (\r\n"
 		    		+ "  id INTEGER IDENTITY PRIMARY KEY,\r\n"
-		    		+ "  shop_name VARCHAR(255) NOT NULL,\r\n"
-		    		+ "  tel VARCHAR(20) NOT NULL,\r\n"
+		    		+ "  shop_name VARCHAR(255) ,\r\n"
+		    		+ "  tel VARCHAR(20) ,\r\n"
 		    		+ "  fax VARCHAR(20),\r\n"
 		    		+ "  email VARCHAR(255),\r\n"
 		    		+ "  website VARCHAR(255),\r\n"
@@ -117,17 +117,17 @@ public class CreatingTables {
 		    String sq4 = "IF OBJECT_ID(N'dbo.invoice_items', N'U') IS NULL\r\n"
 		    		+ "CREATE TABLE invoice_items (\r\n"
 		    		+ "  id INTEGER IDENTITY PRIMARY KEY,\r\n"
-		    		+ "  invoice_id INTEGER NOT NULL,\r\n"
-		    		+ "  customer_name VARCHAR(255) NOT NULL,\r\n"
-		    		+ "  phone_number VARCHAR(20) NOT NULL,\r\n"
-		    		+ "  invoice_date DATE NOT NULL,\r\n"
-		    		+ "  total_amount DECIMAL(10, 2) NOT NULL,\r\n"
-		    		+ "  paid_amount DECIMAL(10, 2) NOT NULL,\r\n"
-		    		+ "  balance DECIMAL(10, 2) NOT NULL,\r\n"
-		    		+ "  item_id INTEGER NOT NULL,\r\n"
-		    		+ "  item_name VARCHAR(255) NOT NULL,\r\n"
-		    		+ "  quantity INTEGER NOT NULL,\r\n"
-		    		+ "  unit_price DECIMAL(10, 2) NOT NULL,\r\n"
+		    		+ "  invoice_id INTEGER ,\r\n"
+		    		+ "  customer_name VARCHAR(255)  ,\r\n"
+		    		+ "  phone_number VARCHAR(20)  ,\r\n"
+		    		+ "  invoice_date DATE  ,\r\n"
+		    		+ "  total_amount DECIMAL(10, 2)  ,\r\n"
+		    		+ "  paid_amount DECIMAL(10, 2)  ,\r\n"
+		    		+ "  balance DECIMAL(10, 2)  ,\r\n"
+		    		+ "  item_id INTEGER ,\r\n"
+		    		+ "  item_name VARCHAR(255),\r\n"
+		    		+ "  quantity INTEGER ,\r\n"
+		    		+ "  unit_price DECIMAL(10, 2),\r\n"
 		    		+ "  FOREIGN KEY (invoice_id) REFERENCES invoices(id),\r\n"
 		    		+ "  FOREIGN KEY (item_id) REFERENCES items(id)\r\n"
 		    		+ ");";
@@ -140,6 +140,26 @@ public class CreatingTables {
 		} catch (Exception ex) {
 			System.err.println(ex);
 		}
+	}
+	//------------------------------------------------------------------------
+	public static void dropAllTables() {
+		String insertQuery = "drop table invoice_items;\r\n"
+				+ "drop table invoices;\r\n"
+				+ "drop table items;\r\n"
+				+ "drop table shop;";
+
+			try (Connection conn = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;"
+					+"databaseName=Invoicing-System-on-Console;" +
+					"encrypt=true;" +
+					"trustServerCertificate=true", "sa", "root");
+					PreparedStatement stmt = conn.prepareStatement(insertQuery)
+					) {
+				stmt.executeUpdate();
+				
+			System.out.println("All Tables dropped");
+			} catch (SQLException ex) {
+				ex.printStackTrace();
+			}
 	}
 	//------------------------------------------------------------------------
 	public static void insertIntoItems() {
@@ -163,7 +183,7 @@ public class CreatingTables {
 				}
 
 				int[] results = stmt.executeBatch();
-				System.out.println("Inserted " + results.length + " rows into hotels table.");
+				System.out.println("Inserted " + results.length + " rows into items table.");
 			} catch (SQLException ex) {
 				ex.printStackTrace();
 			}
@@ -239,7 +259,7 @@ public class CreatingTables {
 	}
 	//------------------------------------------------------------------------
 	public static void inseartIntoShop() {
-		String insertQuery = "INSERT INTO shop (id, name, unit_price) VALUES (?, ?, ?);";
+		String insertQuery = "INSERT INTO shop (shop_name, tel, fax, email, website) VALUES (?, ?, ?, ?, ?);";
 
 			try (Connection conn = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;"
 					+"databaseName=Invoicing-System-on-Console;" +
@@ -247,9 +267,16 @@ public class CreatingTables {
 					"trustServerCertificate=true", "sa", "root");
 					PreparedStatement stmt = conn.prepareStatement(insertQuery)
 					) {
+				stmt.setString(1, Main.shop.getShopName());
+				stmt.setString(2, Main.shop.getTel());
+				stmt.setString(3, Main.shop.getFax());
+				stmt.setString(4, Main.shop.getFax());
+				stmt.setString(5, Main.shop.getWebsite());
+				stmt.addBatch();
+
 				stmt.executeUpdate();
 				
-			System.out.println("shop Table truncated");
+			System.out.println("shop details inserted");
 			} catch (SQLException ex) {
 				ex.printStackTrace();
 			}
@@ -276,7 +303,8 @@ public class CreatingTables {
 				stmt.addBatch();
 			}
 			int[] results = stmt.executeBatch();
-			System.out.println("Inserted " + results.length + " rows into hotels table.");		} catch (SQLException ex) {
+			System.out.println("Inserted " + results.length + " rows into Invoices table.");		}
+		catch (SQLException ex) {
 			ex.printStackTrace();
 		}
 	}
@@ -303,11 +331,11 @@ public class CreatingTables {
 							stmt.setString(9, Main.shop.invoices.get(i).getItems().get(j).getName());
 							stmt.setInt(10, Main.shop.invoices.get(i).getItems().get(j).getQuantity());
 							stmt.setDouble(11, Main.shop.invoices.get(i).getItems().get(j).getUnitPrice());
+							stmt.addBatch();
 						}
-						stmt.addBatch();
 					}
 					int[] results = stmt.executeBatch();
-					System.out.println("Inserted " + results.length + " rows into hotels table.");
+					System.out.println("Inserted " + results.length + " rows into invoice_items table.");
 				} catch (SQLException ex) {
 					ex.printStackTrace();
 				}
