@@ -104,7 +104,42 @@ public class CreatingTables {
 			System.err.println(ex);
 		}
 		// -----------------------------------------------------------------------------------------------------------------------------------
+	    try {
+	    	
+			Driver driver = (Driver) Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver").newInstance();
+			DriverManager.registerDriver(driver);
+	
+			con = DriverManager.getConnection(url, user, pass);
+	
+	
+			Statement st = con.createStatement();
+	
+		    String sq4 = "IF OBJECT_ID(N'dbo.invoice_items', N'U') IS NULL\r\n"
+		    		+ "CREATE TABLE invoice_items (\r\n"
+		    		+ "  id INTEGER IDENTITY PRIMARY KEY,\r\n"
+		    		+ "  invoice_id INTEGER NOT NULL,\r\n"
+		    		+ "  customer_name VARCHAR(255) NOT NULL,\r\n"
+		    		+ "  phone_number VARCHAR(20) NOT NULL,\r\n"
+		    		+ "  invoice_date DATE NOT NULL,\r\n"
+		    		+ "  total_amount DECIMAL(10, 2) NOT NULL,\r\n"
+		    		+ "  paid_amount DECIMAL(10, 2) NOT NULL,\r\n"
+		    		+ "  balance DECIMAL(10, 2) NOT NULL,\r\n"
+		    		+ "  item_id INTEGER NOT NULL,\r\n"
+		    		+ "  item_name VARCHAR(255) NOT NULL,\r\n"
+		    		+ "  quantity INTEGER NOT NULL,\r\n"
+		    		+ "  unit_price DECIMAL(10, 2) NOT NULL,\r\n"
+		    		+ "  FOREIGN KEY (invoice_id) REFERENCES invoices(id),\r\n"
+		    		+ "  FOREIGN KEY (item_id) REFERENCES items(id)\r\n"
+		    		+ ");";
 
+			st.executeUpdate(sq4);
+		    
+		   
+			System.out.println("THE invoice_items TABLE CREATED SUCCESSFULLY");
+			con.close();
+		} catch (Exception ex) {
+			System.err.println(ex);
+		}
 	}
 	//------------------------------------------------------------------------
 	public static void insertIntoItems() {
@@ -186,6 +221,23 @@ public class CreatingTables {
 			}
 	}
 	//------------------------------------------------------------------------
+	public static void truncatesInvoiceItems() {
+		String insertQuery = "Truncate table invoice_items;";
+
+			try (Connection conn = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;"
+					+"databaseName=Invoicing-System-on-Console;" +
+					"encrypt=true;" +
+					"trustServerCertificate=true", "sa", "root");
+					PreparedStatement stmt = conn.prepareStatement(insertQuery)
+					) {
+				stmt.executeUpdate();
+				
+			System.out.println("shop Table truncated");
+			} catch (SQLException ex) {
+				ex.printStackTrace();
+			}
+	}
+	//------------------------------------------------------------------------
 	public static void inseartIntoShop() {
 		String insertQuery = "INSERT INTO shop (id, name, unit_price) VALUES (?, ?, ?);";
 
@@ -203,7 +255,62 @@ public class CreatingTables {
 			}
 	}
 	//------------------------------------------------------------------------
-	//------------------------------------------------------------------------
+	public static void inseartIntoInvoices() {
+		String insertQuery = "insert into invoices (id , customer_name , phone_number , invoice_date , total_amount , paid_amount, balance) VALUES (?,?,?,?,?,?,?);";
 
+		try (Connection conn = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;"
+				+"databaseName=Invoicing-System-on-Console;" +
+				"encrypt=true;" +
+				"trustServerCertificate=true", "sa", "root");
+				PreparedStatement stmt = conn.prepareStatement(insertQuery)
+				) {
+			for( int i = 0 ; i<Main.shop.invoices.size(); i++) {
+				
+				stmt.setInt(1, Main.shop.invoices.get(i).getId());
+				stmt.setString(2, Main.shop.invoices.get(i).getCustomerName());
+				stmt.setString(3, Main.shop.invoices.get(i).getPhoneNumber());
+				stmt.setString(4, Main.shop.invoices.get(i).getInvoiceDate().toString());
+				stmt.setDouble(5, Main.shop.invoices.get(i).getTotalAmount());
+				stmt.setDouble(6, Main.shop.invoices.get(i).getPaidAmount());
+				stmt.setDouble(7, Main.shop.invoices.get(i).getBalance());
+				stmt.addBatch();
+			}
+			int[] results = stmt.executeBatch();
+			System.out.println("Inserted " + results.length + " rows into hotels table.");		} catch (SQLException ex) {
+			ex.printStackTrace();
+		}
+	}
+	//------------------------------------------------------------------------
+	public static void inseartIntoInvoiceItems() {//        1            2              3            4             5              6         7          8        9          10       11       
+		String insertQuery = "INSERT INTO invoice_items (invoice_id, customer_name, phone_number, invoice_date, total_amount, paid_amount, balance, item_id, item_name, quantity, unit_price) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+		try (Connection conn = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;"
+				+"databaseName=Invoicing-System-on-Console;" +
+				"encrypt=true;" +
+				"trustServerCertificate=true", "sa", "root");
+				PreparedStatement stmt = conn.prepareStatement(insertQuery)
+				) {
+					for (int i = 0; i < Main.shop.invoices.size(); i++) {
+
+						stmt.setInt(1, Main.shop.invoices.get(i).getId());
+						stmt.setString(2, Main.shop.invoices.get(i).getCustomerName());
+						stmt.setString(3, Main.shop.invoices.get(i).getPhoneNumber());
+						stmt.setString(4, Main.shop.invoices.get(i).getInvoiceDate().toString());
+						stmt.setDouble(5, Main.shop.invoices.get(i).getTotalAmount());
+						stmt.setDouble(6, Main.shop.invoices.get(i).getPaidAmount());
+						stmt.setDouble(7, Main.shop.invoices.get(i).getBalance());
+						for (int j = 0; j < Main.shop.invoices.get(i).getItems().size() ; j++) {
+							stmt.setInt(8, Main.shop.invoices.get(i).getItems().get(j).getId());
+							stmt.setString(9, Main.shop.invoices.get(i).getItems().get(j).getName());
+							stmt.setInt(10, Main.shop.invoices.get(i).getItems().get(j).getQuantity());
+							stmt.setDouble(11, Main.shop.invoices.get(i).getItems().get(j).getUnitPrice());
+						}
+						stmt.addBatch();
+					}
+					int[] results = stmt.executeBatch();
+					System.out.println("Inserted " + results.length + " rows into hotels table.");
+				} catch (SQLException ex) {
+					ex.printStackTrace();
+				}
+	}
 
 }

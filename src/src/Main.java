@@ -33,7 +33,8 @@ public class Main {
 			System.out.println("5- Report: All Invoices ( Invoice No, Invoice Date, Customer Name, No of items, Total, Balance) ");
 			System.out.println("6- Search (1) Invoice (Search by Invoice No and Report All Invoice details with items)");
 			System.out.println("7- Program Statistics (Print each Main Menu Item with how many time it has been  selected).");
-			System.out.println("8- Exit");
+			System.out.println("8- Database Management");
+	        System.out.println("9- Exit");
 
 			int choice = scanner.nextInt();
 			scanner.nextLine(); // consume the newline character
@@ -147,13 +148,50 @@ public class Main {
 				systemStatistics();
 				break;
 			case 8:
+				System.out.println("Table Management Menu:");
+				System.out.println("1- Insert Tables");
+				System.out.println("2- Truncate Tables");
+				System.out.println("3- Insert Data into Tables");
+				System.out.println("4- Go Back");
+
+				int tableChoice = scanner.nextInt();
+
+				switch (tableChoice) {
+				case 1://Insert Tables
+					CreatingTables.createTablesInDataBase();
+					System.out.println("Tables created successfully!");
+					break;
+				case 2:// Truncate Tables
+					CreatingTables.truncatesItems();
+					CreatingTables.truncatesInvoices();
+					CreatingTables.truncatesShop();
+					//CreatingTables.truncatesInvoiceItems();
+					System.out.println("Tables truncated successfully!");
+					break;
+				case 3:// Insert Data into Tables
+					CreatingTables.inseartIntoShop();
+					CreatingTables.insertIntoItems();
+					CreatingTables.inseartIntoInvoices();
+					CreatingTables.inseartIntoInvoiceItems();
+					System.out.println("Data inserted successfully!");
+					break;
+				case 4:
+					// go back
+					break;
+				default:
+					System.out.println("Invalid choice.");
+					break;
+				}
+				break;
 				//CreatingTables.truncatesItems();
 				//CreatingTables.createTablesInDataBase();
 				//CreatingTables.insertIntoItems();
-				CreatingTables.truncatesInvoices();
-				CreatingTables.truncatesShop();
-				System.out.println("Exiting program...");
-				//return;
+				//CreatingTables.truncatesInvoices();
+				//CreatingTables.truncatesShop();
+				//CreatingTables.inseartIntoInvoices();
+				//System.out.println("Exiting program...");
+			case 9:
+				return;
 			default:
 				System.out.println("Invalid choice.");
 				break;
