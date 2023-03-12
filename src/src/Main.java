@@ -53,9 +53,14 @@ public class Main {
 				switch (shopChoice) {
 				case 1:
 					// load data
+					System.out.println("--------------------------");
 					shop.deserializeShopName("shop.ser");
+					System.out.println("--------------------------");
 					deserializeItems("items.ser");
+					System.out.println("--------------------------");
 					Shop.loadInvoiceHeader();
+					System.out.println("--------------------------");
+
 					break;
 				case 2:
 					// System.out.println("Enter new shop name:");
