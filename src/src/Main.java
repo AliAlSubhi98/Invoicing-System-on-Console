@@ -10,7 +10,6 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 
 public class Main {
-	static Scanner scanner = new Scanner(System.in);
 	static int enterShopSettingsCounter = 0;
 	static int enterManageShopItemsCounter = 0;
 	static int enterCreatenewInvoiceCounter = 0;
@@ -30,7 +29,6 @@ public class Main {
 	static int enterDeleteItemsCounter = 0;
 	static int enterAddItmsCounter = 0;
 
-
 	static Shop shop = new Shop();
 
 	public static void main(String[] args) {
@@ -41,193 +39,206 @@ public class Main {
 			System.out.println("2- Manage Shop Items");
 			System.out.println("3- Create new Invoice");
 			System.out.println("4- Report: Statistics (No Of Items, No of Invoices, Total Sales)");
-			System.out.println("5- Report: All Invoices ( Invoice No, Invoice Date, Customer Name, No of items, Total, Balance) ");
-			System.out.println("6- Search (1) Invoice (Search by Invoice No and Report All Invoice details with items)");
-			System.out.println("7- Program Statistics (Print each Main Menu Item with how many time it has been  selected).");
+			System.out.println(
+					"5- Report: All Invoices ( Invoice No, Invoice Date, Customer Name, No of items, Total, Balance) ");
+			System.out
+					.println("6- Search (1) Invoice (Search by Invoice No and Report All Invoice details with items)");
+			System.out.println(
+					"7- Program Statistics (Print each Main Menu Item with how many time it has been  selected).");
 			System.out.println("8- Database Management");
 			System.out.println("9- Exit");
+			try {
+				Scanner scanner = new Scanner(System.in);
+				int choice = scanner.nextInt();
 
-			int choice = scanner.nextInt();
-			scanner.nextLine(); // consume the newline character
+				switch (choice) {
+				case 1:
+					enterShopSettingsCounter++;
+					boolean shopSettingLoop = true;
+					while (shopSettingLoop) {
 
-			switch (choice) {
-			case 1:
-				enterShopSettingsCounter++;
-				boolean shopSettingLoop = true;
-				while (shopSettingLoop) {
-					
-					System.out.println("Shop Settings:");
-					System.out.println("1- Load Data (Items and invoices)");
-					System.out.println("2- Set Shop Name (data should be saved)");
-					System.out.println("3- Set Invoice Header (Tel / Fax / Email / Website) (Data should be saved)");
-					System.out.println("4- Go Back");
+						System.out.println("Shop Settings:");
+						System.out.println("1- Load Data (Items and invoices)");
+						System.out.println("2- Set Shop Name (data should be saved)");
+						System.out
+								.println("3- Set Invoice Header (Tel / Fax / Email / Website) (Data should be saved)");
+						System.out.println("4- Go Back");
+						try {
+							 scanner = new Scanner(System.in);
+							int shopChoice = scanner.nextInt();
 
-					int shopChoice = scanner.nextInt();
+							switch (shopChoice) {
+							case 1:
+								enterLoadDataCounter++;
+								// load data
+								System.out.println("--------------------------");
+								shop.deserializeShopName("shop.ser");
+								System.out.println("--------------------------");
+								deserializeItems("items.ser");
+								System.out.println("--------------------------");
+								Shop.loadInvoiceHeader();
+								System.out.println("--------------------------");
 
-					switch (shopChoice) {
-					case 1:
-						enterLoadDataCounter++;
-						// load data
-						System.out.println("--------------------------");
-						shop.deserializeShopName("shop.ser");
-						System.out.println("--------------------------");
-						deserializeItems("items.ser");
-						System.out.println("--------------------------");
-						Shop.loadInvoiceHeader();
-						System.out.println("--------------------------");
-
-						break;
-					case 2:
-						enterSetShopNameCounter++;
-						shop.setShopNameAndSerialize();
-						// save data
-						break;
-					case 3:// Set Invoice Header (Tel / Fax / Email / Website) (Data should be saved
-						enterSetInvoiceHeader++;
-						shop.setInvoiceHeader();
-						System.out.println(shop.toString());
-						break;
-					case 4:
-						// go back
-						shopSettingLoop = false ;
-						break;
-					default:
-						System.out.println("Invalid choice.");
-						break;
-					}
-				}
-				break;
-			case 2:
-				enterManageShopItemsCounter++;
-				boolean manageShopItemLoop = true;
-				while (manageShopItemLoop) {
-					
-					System.out.println("Manage Shop Items:");
-					System.out.println("1- Add Items (Item should be saved/serialized)");
-					System.out.println("2- Delete Items");
-					System.out.println("3- Change Item Price");
-					System.out.println("4- Report All Items");
-					System.out.println("5- Go Back");
-
-					int itemChoice = scanner.nextInt();
-
-					switch (itemChoice) {
-					case 1:
-						enterAddItmsCounter++;
-						// add item
-						addItem();
-						saveItemsSerialized(shop.items);
-						ArrayList<Item> items = deserializeItems("items.ser");
-						if (items != null) {
-							for (Item item : items) {
-								System.out.println(item.toString());
+								break;
+							case 2:
+								enterSetShopNameCounter++;
+								shop.setShopNameAndSerialize();
+								// save data
+								break;
+							case 3:// Set Invoice Header (Tel / Fax / Email / Website) (Data should be saved
+								enterSetInvoiceHeader++;
+								shop.setInvoiceHeader();
+								System.out.println(shop.toString());
+								break;
+							case 4:
+								// go back
+								shopSettingLoop = false;
+								break;
+							default:
+								System.out.println("Invalid choice.");
+								break;
 							}
-						} else {
-							System.out.println("Failed to deserialize items.");
+						} catch (Exception e) {
+							System.out.println("ERROR ON SHOP SETTING HAPPENED \n THIS IS ERROR DETAILS \n TRY AGAIN");
+							e.printStackTrace();
 						}
-						break;
-					case 2:
-						enterDeleteItemsCounter++;
-						// delete item
-						removeItem();
-						break;
-					case 3:
-						enterChangeItemPriceCounter++;
-						// change item price
-						changePrice();
-						break;
-					case 4:
-						enterReportAllItemsCounter++;
-						// report all items
-						reportAllItems();
-						downloadAllReportItems(shop.items);
-						break;
-					case 5:
-						// go back
-						manageShopItemLoop = false;
-						break;
-					default:
-						System.out.println("Invalid choice.");
-						break;
 					}
-				}
-				break;
-			case 3: // 3- Create new Invoice"
-				enterCreatenewInvoiceCounter++;
-				Invoice invoice = createInvoice(shop.items);
-				if (invoice != null) {
-					invoice.printInvoice();
-				}
-				downloadInvoice(invoice);
-				break;
-			case 4:
-				enterReportStatisticsCounter++;
-				generateStatisticsReport();
-				break;
-			case 5:
-				enterReportAllInvoicesCounter++;
-				generateInvoiceReport();
-				break;
-			case 6:
-				enterSearchInvoiceCounter++;
-				searchInvoice();
-				break;
-			case 7:
-				enterProgramStatisticsCounter++;
-				systemStatistics();
-				break;
-			case 8:
-				enterDatabaseManagmentCounter++;
-				boolean tableManagmentLoop = true;
-				while (tableManagmentLoop) {
-					System.out.println("Table Management Menu:");
-					System.out.println("1- Insert Tables");
-					System.out.println("2- Truncate Tables");
-					System.out.println("3- Insert Data into Tables");
-					System.out.println("4- Go Back");
+					break;
+				case 2:
+					enterManageShopItemsCounter++;
+					boolean manageShopItemLoop = true;
+					while (manageShopItemLoop) {
 
-					int tableChoice = scanner.nextInt();
+						System.out.println("Manage Shop Items:");
+						System.out.println("1- Add Items (Item should be saved/serialized)");
+						System.out.println("2- Delete Items");
+						System.out.println("3- Change Item Price");
+						System.out.println("4- Report All Items");
+						System.out.println("5- Go Back");
 
-					switch (tableChoice) {
-					case 1:// Insert Tables
-						enterInseartTablesCounter++;
-						CreatingTables.createTablesInDataBase();
-						System.out.println("Tables created successfully!");
-						break;
-					case 2:// Truncate Tables
-						enterRtuncteTablesCounter++;
-						CreatingTables.truncatesItems();
-						CreatingTables.truncatesInvoices();
-						CreatingTables.truncatesShop();
-						// CreatingTables.truncatesInvoiceItems();
-						System.out.println("Tables truncated successfully!");
-						break;
-					case 3:// Insert Data into Tables
-						enterInseartDataIntoTablesCounter++;
-						CreatingTables.inseartIntoShop();
-						CreatingTables.insertIntoItems();
-						CreatingTables.inseartIntoInvoices();
-						CreatingTables.inseartIntoInvoiceItems();
-						System.out.println("Data inserted successfully!");
-						break;
-					case 4:
-						// go back
-						tableManagmentLoop = false;
-						break;
-					default:
-						System.out.println("Invalid choice.");
-						break;
+						int itemChoice = scanner.nextInt();
+
+						switch (itemChoice) {
+						case 1:
+							enterAddItmsCounter++;
+							// add item
+							addItem();
+							saveItemsSerialized(shop.items);
+							ArrayList<Item> items = deserializeItems("items.ser");
+							if (items != null) {
+								for (Item item : items) {
+									System.out.println(item.toString());
+								}
+							} else {
+								System.out.println("Failed to deserialize items.");
+							}
+							break;
+						case 2:
+							enterDeleteItemsCounter++;
+							// delete item
+							removeItem();
+							break;
+						case 3:
+							enterChangeItemPriceCounter++;
+							// change item price
+							changePrice();
+							break;
+						case 4:
+							enterReportAllItemsCounter++;
+							// report all items
+							reportAllItems();
+							downloadAllReportItems(shop.items);
+							break;
+						case 5:
+							// go back
+							manageShopItemLoop = false;
+							break;
+						default:
+							System.out.println("Invalid choice.");
+							break;
+						}
 					}
+					break;
+				case 3: // 3- Create new Invoice"
+					enterCreatenewInvoiceCounter++;
+					Invoice invoice = createInvoice(shop.items);
+					if (invoice != null) {
+						invoice.printInvoice();
+					}
+					downloadInvoice(invoice);
+					break;
+				case 4:
+					enterReportStatisticsCounter++;
+					generateStatisticsReport();
+					break;
+				case 5:
+					enterReportAllInvoicesCounter++;
+					generateInvoiceReport();
+					break;
+				case 6:
+					enterSearchInvoiceCounter++;
+					searchInvoice();
+					break;
+				case 7:
+					enterProgramStatisticsCounter++;
+					systemStatistics();
+					break;
+				case 8:
+					enterDatabaseManagmentCounter++;
+					boolean tableManagmentLoop = true;
+					while (tableManagmentLoop) {
+						System.out.println("Table Management Menu:");
+						System.out.println("1- Insert Tables");
+						System.out.println("2- Truncate Tables");
+						System.out.println("3- Insert Data into Tables");
+						System.out.println("4- Go Back");
+
+						int tableChoice = scanner.nextInt();
+
+						switch (tableChoice) {
+						case 1:// Insert Tables
+							enterInseartTablesCounter++;
+							CreatingTables.createTablesInDataBase();
+							System.out.println("Tables created successfully!");
+							break;
+						case 2:// Truncate Tables
+							enterRtuncteTablesCounter++;
+							CreatingTables.truncatesItems();
+							CreatingTables.truncatesInvoices();
+							CreatingTables.truncatesShop();
+							// CreatingTables.truncatesInvoiceItems();
+							System.out.println("Tables truncated successfully!");
+							break;
+						case 3:// Insert Data into Tables
+							enterInseartDataIntoTablesCounter++;
+							CreatingTables.inseartIntoShop();
+							CreatingTables.insertIntoItems();
+							CreatingTables.inseartIntoInvoices();
+							CreatingTables.inseartIntoInvoiceItems();
+							System.out.println("Data inserted successfully!");
+							break;
+						case 4:
+							// go back
+							tableManagmentLoop = false;
+							break;
+						default:
+							System.out.println("Invalid choice.");
+							break;
+						}
+					}
+					break;
+				case 9:
+					System.out.println("Exiting program...");
+					return;
+				default:
+					System.out.println("Invalid choice.");
+					break;
 				}
-				break;
-			case 9:
-				 System.out.println("Exiting program...");
-				return;
-			default:
-				System.out.println("Invalid choice.");
-				break;
+			} catch (Exception e) {
+				System.out.println("Enter Valid Number");
 			}
 		}
+
 	}
 
 	// ----------------------------------------------------------------------
@@ -250,15 +261,16 @@ public class Main {
 		System.out.println("-----------------------------------------------------------------------------------------");
 		System.out.println("Shop Settings Statistics:");
 		System.out.println("1- Load Data (Items and invoices)" + enterLoadDataCounter);
-		System.out.println("2- Set Shop Name (data should be saved)" + enterSetShopNameCounter  );
-		System.out.println("3- Set Invoice Header (Tel / Fax / Email / Website) (Data should be saved)" + enterSetInvoiceHeader);
+		System.out.println("2- Set Shop Name (data should be saved)" + enterSetShopNameCounter);
+		System.out.println(
+				"3- Set Invoice Header (Tel / Fax / Email / Website) (Data should be saved)" + enterSetInvoiceHeader);
 		System.out.println("4- Go Back");
 		System.out.println("-----------------------------------------------------------------------------------------");
 		System.out.println("Manage Shop Items Statistics:");
-		System.out.println("1- Add Items (Item should be saved/serialized)" + enterAddItmsCounter );
-		System.out.println("2- Delete Items" + enterDeleteItemsCounter );
-		System.out.println("3- Change Item Price" + enterChangeItemPriceCounter );
-		System.out.println("4- Report All Items" + enterReportAllItemsCounter );
+		System.out.println("1- Add Items (Item should be saved/serialized)" + enterAddItmsCounter);
+		System.out.println("2- Delete Items" + enterDeleteItemsCounter);
+		System.out.println("3- Change Item Price" + enterChangeItemPriceCounter);
+		System.out.println("4- Report All Items" + enterReportAllItemsCounter);
 		System.out.println("5- Go Back");
 	}
 
@@ -266,6 +278,7 @@ public class Main {
 	static void removeItem() {
 		try {
 			System.out.println("Enter item ID to remove:");
+			Scanner scanner = new Scanner(System.in);
 			int idToRemove = scanner.nextInt();
 			boolean found = false;
 			for (int i = 0; i < shop.items.size(); i++) {
@@ -289,6 +302,7 @@ public class Main {
 			ioe.printStackTrace();
 		} catch (InputMismatchException ime) {
 			System.out.println("Invalid input. Please enter a valid integer ID.");
+			Scanner scanner = new Scanner(System.in);
 			scanner.nextLine(); // clear scanner buffer
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -298,6 +312,8 @@ public class Main {
 	// ----------------------------------------------------------------------
 	private static void changePrice() {
 		System.out.println("Enter item ID to change price:");
+		Scanner scanner = new Scanner(System.in);
+
 		int itemId = scanner.nextInt();
 
 		boolean itemFound = false;
@@ -382,6 +398,8 @@ public class Main {
 	// ----------------------------------------------------------------------
 	public static Invoice createInvoice(List<Item> items2) {
 		System.out.println("Enter customer name: ");
+		Scanner scanner = new Scanner(System.in);
+
 		String customerName = scanner.nextLine();
 		System.out.println("Enter customer phone number: ");
 		String customerPhoneNumber = scanner.nextLine();
@@ -459,33 +477,45 @@ public class Main {
 	// ----------------------------------------------------------------------
 	private static void addItem() {
 		try {
-			System.out.println("Enter item ID:");
-			int id = scanner.nextInt();
-			scanner.nextLine();
+			Scanner scanner = new Scanner(System.in);
+			int id;
+			do {
+				System.out.println("Enter item ID (a positive integer):");
+				while (!scanner.hasNextInt()) {
+					System.out.println("Invalid input. Please enter a positive integer for item ID:");
+					scanner.nextLine();
+				}
+				id = scanner.nextInt();
+			} while (id <= 0);
+
 			System.out.println("Enter item name:");
-			String name = scanner.nextLine();
-			System.out.println("Enter item unit price:");
-			double unitPrice = scanner.nextDouble();
-			scanner.nextLine();
+			String name = scanner.next();
+
+			double unitPrice;
+			do {
+				System.out.println("Enter item unit price (a positive decimal number):");
+				while (!scanner.hasNextDouble()) {
+					System.out.println("Invalid input. Please enter a positive decimal number for item unit price:");
+					scanner.nextLine();
+				}
+				unitPrice = scanner.nextDouble();
+			} while (unitPrice <= 0);
 
 			Item item = new Item(id, name, unitPrice);
 			shop.items.add(item);
 
-			try {
-				FileOutputStream fos = new FileOutputStream("items.txt");
-				ObjectOutputStream oos = new ObjectOutputStream(fos);
+			try (FileOutputStream fos = new FileOutputStream("items.txt");
+					ObjectOutputStream oos = new ObjectOutputStream(fos)) {
 				oos.writeObject(shop.items);
-				oos.close();
-				fos.close();
 				System.out.println("Item added successfully.");
 			} catch (IOException ioe) {
 				System.out.println("Error writing to file.");
 			}
-		} catch (InputMismatchException e) {
-			System.out.println("Invalid input. Please enter a valid number for item ID or unit price.");
-			scanner.nextLine(); // consume the invalid input
+		} catch (Exception e) {
+			System.out.println("Error occurred: " + e.getMessage());
 		}
 	}
+
 
 	// ----------------------------------------------------------------------
 	static void downloadInvoice(Invoice invoice) {
@@ -579,10 +609,17 @@ public class Main {
 	}
 
 	// ----------------------------------------------------------------------
+
 	public static void searchInvoice() {
 		List<Invoice> invoices = shop.getInvoices();
 		System.out.println("Enter invoice number to search: ");
 		try {
+			Scanner scanner = new Scanner(System.in);
+
+			while (!scanner.hasNextInt()) { // keep asking until a valid integer is entered
+				System.out.println("Invalid input. Please enter a valid invoice number: ");
+				scanner.nextLine(); // consume any remaining input
+			}
 			int invoiceNo = scanner.nextInt();
 			scanner.nextLine(); // consume the newline character left by nextInt()
 			Invoice invoice = null;
@@ -596,6 +633,7 @@ public class Main {
 				System.out.println("Invoice not found.");
 				return;
 			}
+	        // display invoice details...
 			System.out.println("Invoice #" + invoice.getId());
 			System.out.println("Invoice date: " + invoice.getInvoiceDate());
 			System.out.println("Customer name: " + invoice.getCustomerName());
@@ -613,6 +651,8 @@ public class Main {
 			System.out.printf("%60s%-20.2f\n", "Balance: ", invoice.getBalance());
 		} catch (InputMismatchException e) {
 			System.out.println("Invalid input. Please enter a valid invoice number.");
+			Scanner scanner = new Scanner(System.in);
+
 			scanner.nextLine(); // consume any remaining input
 		}
 	}
