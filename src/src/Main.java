@@ -18,7 +18,18 @@ public class Main {
 	static int enterReportAllInvoicesCounter = 0;
 	static int enterSearchInvoiceCounter = 0;
 	static int enterProgramStatisticsCounter = 0;
-	static int enterCounter = 0;
+	static int enterDatabaseManagmentCounter = 0;
+	static int enterLoadDataCounter = 0;
+	static int enterSetShopNameCounter = 0;
+	static int enterSetInvoiceHeader = 0;
+	static int enterInseartTablesCounter = 0;
+	static int enterRtuncteTablesCounter = 0;
+	static int enterInseartDataIntoTablesCounter = 0;
+	static int enterReportAllItemsCounter = 0;
+	static int enterChangeItemPriceCounter = 0;
+	static int enterDeleteItemsCounter = 0;
+	static int enterAddItmsCounter = 0;
+
 
 	static Shop shop = new Shop();
 
@@ -34,7 +45,7 @@ public class Main {
 			System.out.println("6- Search (1) Invoice (Search by Invoice No and Report All Invoice details with items)");
 			System.out.println("7- Program Statistics (Print each Main Menu Item with how many time it has been  selected).");
 			System.out.println("8- Database Management");
-	        System.out.println("9- Exit");
+			System.out.println("9- Exit");
 
 			int choice = scanner.nextInt();
 			scanner.nextLine(); // consume the newline character
@@ -42,90 +53,103 @@ public class Main {
 			switch (choice) {
 			case 1:
 				enterShopSettingsCounter++;
-				System.out.println("Shop Settings:");
-				System.out.println("1- Load Data (Items and invoices)");
-				System.out.println("2- Set Shop Name (data should be saved)");
-				System.out.println("3- Set Invoice Header (Tel / Fax / Email / Website) (Data should be saved)");
-				System.out.println("4- Go Back");
+				boolean shopSettingLoop = true;
+				while (shopSettingLoop) {
+					
+					System.out.println("Shop Settings:");
+					System.out.println("1- Load Data (Items and invoices)");
+					System.out.println("2- Set Shop Name (data should be saved)");
+					System.out.println("3- Set Invoice Header (Tel / Fax / Email / Website) (Data should be saved)");
+					System.out.println("4- Go Back");
 
-				int shopChoice = scanner.nextInt();
+					int shopChoice = scanner.nextInt();
 
-				switch (shopChoice) {
-				case 1:
-					// load data
-					System.out.println("--------------------------");
-					shop.deserializeShopName("shop.ser");
-					System.out.println("--------------------------");
-					deserializeItems("items.ser");
-					System.out.println("--------------------------");
-					Shop.loadInvoiceHeader();
-					System.out.println("--------------------------");
+					switch (shopChoice) {
+					case 1:
+						enterLoadDataCounter++;
+						// load data
+						System.out.println("--------------------------");
+						shop.deserializeShopName("shop.ser");
+						System.out.println("--------------------------");
+						deserializeItems("items.ser");
+						System.out.println("--------------------------");
+						Shop.loadInvoiceHeader();
+						System.out.println("--------------------------");
 
-					break;
-				case 2:
-					// System.out.println("Enter new shop name:");
-					// String newName = scanner.next();
-					// shop.setShopName(newName);
-					shop.setShopNameAndSerialize();
-					// save data
-					break;
-				case 3:// Set Invoice Header (Tel / Fax / Email / Website) (Data should be saved
-					shop.setInvoiceHeader();
-					System.out.println(shop.toString());
-					break;
-				// save data
-				case 4:
-					// go back
-					break;
-				default:
-					System.out.println("Invalid choice.");
-					break;
+						break;
+					case 2:
+						enterSetShopNameCounter++;
+						shop.setShopNameAndSerialize();
+						// save data
+						break;
+					case 3:// Set Invoice Header (Tel / Fax / Email / Website) (Data should be saved
+						enterSetInvoiceHeader++;
+						shop.setInvoiceHeader();
+						System.out.println(shop.toString());
+						break;
+					case 4:
+						// go back
+						shopSettingLoop = false ;
+						break;
+					default:
+						System.out.println("Invalid choice.");
+						break;
+					}
 				}
 				break;
 			case 2:
 				enterManageShopItemsCounter++;
-				System.out.println("Manage Shop Items:");
-				System.out.println("1- Add Items (Item should be saved/serialized)");
-				System.out.println("2- Delete Items");
-				System.out.println("3- Change Item Price");
-				System.out.println("4- Report All Items");
-				System.out.println("5- Go Back");
+				boolean manageShopItemLoop = true;
+				while (manageShopItemLoop) {
+					
+					System.out.println("Manage Shop Items:");
+					System.out.println("1- Add Items (Item should be saved/serialized)");
+					System.out.println("2- Delete Items");
+					System.out.println("3- Change Item Price");
+					System.out.println("4- Report All Items");
+					System.out.println("5- Go Back");
 
-				int itemChoice = scanner.nextInt();
+					int itemChoice = scanner.nextInt();
 
-				switch (itemChoice) {
-				case 1:
-					// add item
-					addItem();
-					saveItemsSerialized(shop.items);
-					ArrayList<Item> items = deserializeItems("items.ser");
-					if (items != null) {
-						for (Item item : items) {
-							System.out.println(item.toString());
+					switch (itemChoice) {
+					case 1:
+						enterAddItmsCounter++;
+						// add item
+						addItem();
+						saveItemsSerialized(shop.items);
+						ArrayList<Item> items = deserializeItems("items.ser");
+						if (items != null) {
+							for (Item item : items) {
+								System.out.println(item.toString());
+							}
+						} else {
+							System.out.println("Failed to deserialize items.");
 						}
-					} else {
-						System.out.println("Failed to deserialize items.");
+						break;
+					case 2:
+						enterDeleteItemsCounter++;
+						// delete item
+						removeItem();
+						break;
+					case 3:
+						enterChangeItemPriceCounter++;
+						// change item price
+						changePrice();
+						break;
+					case 4:
+						enterReportAllItemsCounter++;
+						// report all items
+						reportAllItems();
+						downloadAllReportItems(shop.items);
+						break;
+					case 5:
+						// go back
+						manageShopItemLoop = false;
+						break;
+					default:
+						System.out.println("Invalid choice.");
+						break;
 					}
-					break;
-				case 2:
-					// delete item
-					removeItem();
-					break;
-				case 3:
-					// change item price
-					changePrice();
-					break;
-				case 4:
-					// report all items
-					reportAllItems();
-					downloadAllReportItems(shop.items);
-					break;
-				case 5:
-					// go back
-					break;
-				default:
-					System.out.println("Invalid choice.");
-					break;
 				}
 				break;
 			case 3: // 3- Create new Invoice"
@@ -142,7 +166,7 @@ public class Main {
 				break;
 			case 5:
 				enterReportAllInvoicesCounter++;
-				 generateInvoiceReport();
+				generateInvoiceReport();
 				break;
 			case 6:
 				enterSearchInvoiceCounter++;
@@ -153,49 +177,51 @@ public class Main {
 				systemStatistics();
 				break;
 			case 8:
-				System.out.println("Table Management Menu:");
-				System.out.println("1- Insert Tables");
-				System.out.println("2- Truncate Tables");
-				System.out.println("3- Insert Data into Tables");
-				System.out.println("4- Go Back");
+				enterDatabaseManagmentCounter++;
+				boolean tableManagmentLoop = true;
+				while (tableManagmentLoop) {
+					System.out.println("Table Management Menu:");
+					System.out.println("1- Insert Tables");
+					System.out.println("2- Truncate Tables");
+					System.out.println("3- Insert Data into Tables");
+					System.out.println("4- Go Back");
 
-				int tableChoice = scanner.nextInt();
+					int tableChoice = scanner.nextInt();
 
-				switch (tableChoice) {
-				case 1://Insert Tables
-					CreatingTables.createTablesInDataBase();
-					System.out.println("Tables created successfully!");
-					break;
-				case 2:// Truncate Tables
-					CreatingTables.truncatesItems();
-					CreatingTables.truncatesInvoices();
-					CreatingTables.truncatesShop();
-					//CreatingTables.truncatesInvoiceItems();
-					System.out.println("Tables truncated successfully!");
-					break;
-				case 3:// Insert Data into Tables
-					CreatingTables.inseartIntoShop();
-					CreatingTables.insertIntoItems();
-					CreatingTables.inseartIntoInvoices();
-					CreatingTables.inseartIntoInvoiceItems();
-					System.out.println("Data inserted successfully!");
-					break;
-				case 4:
-					// go back
-					break;
-				default:
-					System.out.println("Invalid choice.");
-					break;
+					switch (tableChoice) {
+					case 1:// Insert Tables
+						enterInseartTablesCounter++;
+						CreatingTables.createTablesInDataBase();
+						System.out.println("Tables created successfully!");
+						break;
+					case 2:// Truncate Tables
+						enterRtuncteTablesCounter++;
+						CreatingTables.truncatesItems();
+						CreatingTables.truncatesInvoices();
+						CreatingTables.truncatesShop();
+						// CreatingTables.truncatesInvoiceItems();
+						System.out.println("Tables truncated successfully!");
+						break;
+					case 3:// Insert Data into Tables
+						enterInseartDataIntoTablesCounter++;
+						CreatingTables.inseartIntoShop();
+						CreatingTables.insertIntoItems();
+						CreatingTables.inseartIntoInvoices();
+						CreatingTables.inseartIntoInvoiceItems();
+						System.out.println("Data inserted successfully!");
+						break;
+					case 4:
+						// go back
+						tableManagmentLoop = false;
+						break;
+					default:
+						System.out.println("Invalid choice.");
+						break;
+					}
 				}
 				break;
-				//CreatingTables.truncatesItems();
-				//CreatingTables.createTablesInDataBase();
-				//CreatingTables.insertIntoItems();
-				//CreatingTables.truncatesInvoices();
-				//CreatingTables.truncatesShop();
-				//CreatingTables.inseartIntoInvoices();
-				//System.out.println("Exiting program...");
 			case 9:
+				 System.out.println("Exiting program...");
 				return;
 			default:
 				System.out.println("Invalid choice.");
@@ -203,6 +229,7 @@ public class Main {
 			}
 		}
 	}
+
 	// ----------------------------------------------------------------------
 	private static void systemStatistics() {
 		System.out.println("Main Menu Statistics:");
@@ -218,20 +245,23 @@ public class Main {
 				+ enterSearchInvoiceCounter);
 		System.out.println("7- Program Statistics (Print each Main Menu Item with how many time it has been  selected)."
 				+ enterProgramStatisticsCounter);
+		System.out.println("8- Database Management " + enterDatabaseManagmentCounter);
+
 		System.out.println("-----------------------------------------------------------------------------------------");
 		System.out.println("Shop Settings Statistics:");
-		System.out.println("1- Load Data (Items and invoices)");
-		System.out.println("2- Set Shop Name (data should be saved)");
-		System.out.println("3- Set Invoice Header (Tel / Fax / Email / Website) (Data should be saved)");
+		System.out.println("1- Load Data (Items and invoices)" + enterLoadDataCounter);
+		System.out.println("2- Set Shop Name (data should be saved)" + enterSetShopNameCounter  );
+		System.out.println("3- Set Invoice Header (Tel / Fax / Email / Website) (Data should be saved)" + enterSetInvoiceHeader);
 		System.out.println("4- Go Back");
 		System.out.println("-----------------------------------------------------------------------------------------");
 		System.out.println("Manage Shop Items Statistics:");
-		System.out.println("1- Add Items (Item should be saved/serialized)");
-		System.out.println("2- Delete Items");
-		System.out.println("3- Change Item Price");
-		System.out.println("4- Report All Items");
+		System.out.println("1- Add Items (Item should be saved/serialized)" + enterAddItmsCounter );
+		System.out.println("2- Delete Items" + enterDeleteItemsCounter );
+		System.out.println("3- Change Item Price" + enterChangeItemPriceCounter );
+		System.out.println("4- Report All Items" + enterReportAllItemsCounter );
 		System.out.println("5- Go Back");
 	}
+
 	// ----------------------------------------------------------------------
 	static void removeItem() {
 		try {
@@ -264,6 +294,7 @@ public class Main {
 			e.printStackTrace();
 		}
 	}
+
 	// ----------------------------------------------------------------------
 	private static void changePrice() {
 		System.out.println("Enter item ID to change price:");
@@ -295,6 +326,7 @@ public class Main {
 			System.out.println("Item not found.");
 		}
 	}
+
 	// ----------------------------------------------------------------------
 	private static void reportAllItems() {
 		System.out.println("All Items Report:");
@@ -304,46 +336,49 @@ public class Main {
 			System.out.println("-----------------------");
 		}
 	}
+
 	// ----------------------------------------------------------------------
 	private static void downloadAllReportItems(ArrayList<Item> items) {
-	    try {
-	        File folder = new File("ReportOfItems");
-	        if (!folder.exists()) {
-	            folder.mkdirs(); // create the directory and any missing parent directories
-	        }
+		try {
+			File folder = new File("ReportOfItems");
+			if (!folder.exists()) {
+				folder.mkdirs(); // create the directory and any missing parent directories
+			}
 
-	        File myFile = new File(folder, "all_items_report.txt");
-	        FileWriter fw = new FileWriter(myFile, true);
+			File myFile = new File(folder, "all_items_report.txt");
+			FileWriter fw = new FileWriter(myFile, true);
 
-	        Date currentDate = new Date();
-	        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-	        fw.write("Date: " + dateFormat.format(currentDate) + "\n\n");
-	        fw.write("All Items Report:\n\n");
-	        fw.write(String.format("%-5s%-20s%-10s\n", "ID", "Name", "Unit Price"));
-	        fw.write("----------------------------------------------------\n");
-	        for (Item item : items) {
-	            fw.write(String.format("%-5d%-20s%-10.2f\n", item.getId(), item.getName(), item.getUnitPrice()));
-	        }
-	        fw.write("----------------------------------------------------\n\n");
-	        fw.close();
-	        System.out.println("Report downloaded successfully.");
-	    } catch (IOException ioe) {
-	        ioe.printStackTrace();
-	    }
+			Date currentDate = new Date();
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+			fw.write("Date: " + dateFormat.format(currentDate) + "\n\n");
+			fw.write("All Items Report:\n\n");
+			fw.write(String.format("%-5s%-20s%-10s\n", "ID", "Name", "Unit Price"));
+			fw.write("----------------------------------------------------\n");
+			for (Item item : items) {
+				fw.write(String.format("%-5d%-20s%-10.2f\n", item.getId(), item.getName(), item.getUnitPrice()));
+			}
+			fw.write("----------------------------------------------------\n\n");
+			fw.close();
+			System.out.println("Report downloaded successfully.");
+		} catch (IOException ioe) {
+			ioe.printStackTrace();
+		}
 	}
+
 	// ----------------------------------------------------------------------
 	private static void saveItemsSerialized(ArrayList<Item> items) {
-	    try {
-	        FileOutputStream fos = new FileOutputStream("items.ser");
-	        ObjectOutputStream oos = new ObjectOutputStream(fos);
-	        oos.writeObject(items);
-	        oos.close();
-	        fos.close();
-	        System.out.println("Items saved(serialized) successfully.");
-	    } catch (IOException ioe) {
-	        ioe.printStackTrace();
-	    }
+		try {
+			FileOutputStream fos = new FileOutputStream("items.ser");
+			ObjectOutputStream oos = new ObjectOutputStream(fos);
+			oos.writeObject(items);
+			oos.close();
+			fos.close();
+			System.out.println("Items saved(serialized) successfully.");
+		} catch (IOException ioe) {
+			ioe.printStackTrace();
+		}
 	}
+
 	// ----------------------------------------------------------------------
 	public static Invoice createInvoice(List<Item> items2) {
 		System.out.println("Enter customer name: ");
@@ -420,6 +455,7 @@ public class Main {
 		}
 		return invoice;
 	}
+
 	// ----------------------------------------------------------------------
 	private static void addItem() {
 		try {
@@ -450,10 +486,12 @@ public class Main {
 			scanner.nextLine(); // consume the invalid input
 		}
 	}
+
 	// ----------------------------------------------------------------------
 	static void downloadInvoice(Invoice invoice) {
 		File folder = new File("Invoices");
-		//File folder = new File("C:\\Users\\BlackDell\\git\\Invoicing-System-on-Console\\Invoices");
+		// File folder = new
+		// File("C:\\Users\\BlackDell\\git\\Invoicing-System-on-Console\\Invoices");
 
 		if (!folder.exists()) {
 			folder.mkdir();
@@ -480,8 +518,8 @@ public class Main {
 					"Total price"));
 			fw.write("+---------------------------------------------------------------------------------------+\n");
 			for (Item item : invoice.getItems()) {
-				fw.write(String.format("| %-20s | OMR%-19.2f | %-19d | OMR%-19.2f |\n", item.getName(), item.getUnitPrice(),
-						item.getQuantity(), item.getTotalPrice()));
+				fw.write(String.format("| %-20s | OMR%-19.2f | %-19d | OMR%-19.2f |\n", item.getName(),
+						item.getUnitPrice(), item.getQuantity(), item.getTotalPrice()));
 			}
 			fw.write("+---------------------------------------------------------------------------------------+\n");
 			fw.write(String.format("| %-60s | OMR%-19.2f |\n", "Total amount:", invoice.getTotalAmount()));
@@ -496,6 +534,7 @@ public class Main {
 			e.printStackTrace();
 		}
 	}
+
 	// ----------------------------------------------------------------------
 	public static void generateStatisticsReport() {
 		int numItems = shop.getItems().size();
@@ -509,6 +548,7 @@ public class Main {
 		System.out.println("Number of Invoices: " + numInvoices);
 		System.out.println("Total Sales: OMR" + String.format("%.2f", totalSales));
 	}
+
 	// ----------------------------------------------------------------------
 	public static void generateInvoiceReport() {
 		List<Invoice> invoices = shop.getInvoices();
@@ -537,6 +577,7 @@ public class Main {
 		System.out.println(
 				"---------------------------------------------------------------------------------------------------");
 	}
+
 	// ----------------------------------------------------------------------
 	public static void searchInvoice() {
 		List<Invoice> invoices = shop.getInvoices();
@@ -575,37 +616,39 @@ public class Main {
 			scanner.nextLine(); // consume any remaining input
 		}
 	}
+
 	// ----------------------------------------------------------------------
-	public static ArrayList<Invoice> loadInvoices() {//not used
-	    ArrayList<Invoice> invoices = new ArrayList<>();
-	    try {
-	        FileInputStream fis = new FileInputStream("invoice.ser");
-	        ObjectInputStream ois = new ObjectInputStream(fis);
-	        invoices = (ArrayList<Invoice>) ois.readObject();
-	        ois.close();
-	        fis.close();
-	        System.out.println("Invoices loaded successfully.");
-	    } catch (IOException | ClassNotFoundException ioe) {
-	        ioe.printStackTrace();
-	    }
-	    return invoices;
+	public static ArrayList<Invoice> loadInvoices() {// not used
+		ArrayList<Invoice> invoices = new ArrayList<>();
+		try {
+			FileInputStream fis = new FileInputStream("invoice.ser");
+			ObjectInputStream ois = new ObjectInputStream(fis);
+			invoices = (ArrayList<Invoice>) ois.readObject();
+			ois.close();
+			fis.close();
+			System.out.println("Invoices loaded successfully.");
+		} catch (IOException | ClassNotFoundException ioe) {
+			ioe.printStackTrace();
+		}
+		return invoices;
 	}
+
 	// ----------------------------------------------------------------------
 	public static ArrayList<Item> deserializeItems(String filename) {
-	    try {
-	        FileInputStream fis = new FileInputStream(filename);
-	        ObjectInputStream ois = new ObjectInputStream(fis);
-	        ArrayList<Item> items = (ArrayList<Item>) ois.readObject();
-	        ois.close();
-	        fis.close();
-	        System.out.println(items.toString());
-	        return items;
-	    } catch (IOException ioe) {
-	        ioe.printStackTrace();
-	    } catch (ClassNotFoundException cne) {
-	        cne.printStackTrace();
-	    }
-	    return null;
+		try {
+			FileInputStream fis = new FileInputStream(filename);
+			ObjectInputStream ois = new ObjectInputStream(fis);
+			ArrayList<Item> items = (ArrayList<Item>) ois.readObject();
+			ois.close();
+			fis.close();
+			System.out.println(items.toString());
+			return items;
+		} catch (IOException ioe) {
+			ioe.printStackTrace();
+		} catch (ClassNotFoundException cne) {
+			cne.printStackTrace();
+		}
+		return null;
 	}
 	// ----------------------------------------------------------------------
 
